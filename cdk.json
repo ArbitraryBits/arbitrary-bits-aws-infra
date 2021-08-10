@@ -2,6 +2,10 @@
   "app": "dotnet run -p src/ArbitraryBitsAwsInfra/ArbitraryBitsAwsInfra.csproj",
   "versionReporting": false,
   "context": {
+    "dev": {
+      "account": "437377620726",
+      "region": "us-east-1"
+    },
     "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": true,
     "@aws-cdk/core:enableStackNameDuplicates": "true",
     "aws-cdk:enableDiffNoFail": "true",

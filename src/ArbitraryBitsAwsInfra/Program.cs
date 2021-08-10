@@ -10,12 +10,14 @@ namespace ArbitraryBitsAwsInfra
         public static void Main(string[] args)
         {
             var app = new App();
+            var context = app.Node.TryGetContext("dev") as Dictionary<String, Object>;
+            
             new ArbitraryBitsAwsInfraStack(app, "ArbitraryBitsAwsInfraStack", new StackProps
             {
                 Env = new Amazon.CDK.Environment
                 {
-                    Account = "437377620726",
-                    Region = "us-east-1",
+                    Account = context["account"] as String,
+                    Region = context["region"] as String,
                 }
             });
 
