@@ -10,6 +10,8 @@ namespace ArbitraryBitsAwsInfra
         public static void Main(string[] args)
         {
             var app = new App();
+            Amazon.CDK.Tags.Of(app).Add("AppName", "Example");
+
             var context = app.Node.TryGetContext("dev") as Dictionary<String, Object>;
             
             new ArbitraryBitsAwsInfraStack(app, "ArbitraryBitsAwsInfraStack", new StackProps
