@@ -3,9 +3,9 @@ using Amazon.CDK.AWS.EC2;
 
 namespace ArbitraryBitsAwsInfra
 {
-    public class ArbitraryBitsAwsInfraStack : Stack
+    public class VpcStack : Stack
     {
-        internal ArbitraryBitsAwsInfraStack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
+        internal VpcStack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
         {
             // create vpc
             var vpc = new Vpc(this, "ExampleVPC", new VpcProps {
@@ -14,17 +14,22 @@ namespace ArbitraryBitsAwsInfra
                 NatGateways = 0,
                 SubnetConfiguration = new [] {
                     new SubnetConfiguration() {
-                        Name = "Private subnet",
+                        Name = "public-subnet",
                         SubnetType = SubnetType.PUBLIC,
+                        CidrMask = 24
+                    },
+                    new SubnetConfiguration() {
+                        Name = "isolated-subnet",
+                        SubnetType = SubnetType.ISOLATED,
                         CidrMask = 24
                     }
                 }
             });
 
-            // add tag
-            Amazon.CDK.Tags.Of(vpc).Add("Owner", "Reloni");
+            // add example tag
+            Amazon.CDK.Tags.Of(vpc).Add("ExampleProperty", "Value");
 
-            var cfn = new CfnOutput(this, "ExampleOutput", new CfnOutputProps {
+            var cfn = new CfnOutput(this, "VpcIdOutput", new CfnOutputProps {
                 ExportName = "VPCId",
                 Value = vpc.VpcId
             });

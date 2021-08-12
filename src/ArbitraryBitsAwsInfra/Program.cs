@@ -10,18 +10,18 @@ namespace ArbitraryBitsAwsInfra
         public static void Main(string[] args)
         {
             var app = new App();
-            Amazon.CDK.Tags.Of(app).Add("AppName", "Example");
 
             var context = app.Node.TryGetContext("dev") as Dictionary<String, Object>;
-            
-            new ArbitraryBitsAwsInfraStack(app, "ArbitraryBitsAwsInfraStack", new StackProps
+            var env = new Amazon.CDK.Environment
             {
-                Env = new Amazon.CDK.Environment
-                {
-                    Account = context["account"] as String,
-                    Region = context["region"] as String,
-                }
-            });
+                Account = context["account"] as String,
+                Region = context["region"] as String,
+            };
+
+            // tag all app items
+            Amazon.CDK.Tags.Of(app).Add("AppName", "Example");
+
+            var vpc = new VpcStack(app, "Vpc", new StackProps { Env = env });
 
             app.Synth();
         }
