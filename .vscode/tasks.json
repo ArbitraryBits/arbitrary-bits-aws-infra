@@ -2,6 +2,26 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Deploy All",
+            "command": "cdk deploy --all --require-approval never",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
+        },
+        {
+            "label": "Destroy All",
+            "command": "cdk destroy --all --require-approval never",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
+        },
+        {
             "label": "build",
             "command": "dotnet",
             "type": "process",
