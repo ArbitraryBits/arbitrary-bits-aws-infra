@@ -22,6 +22,7 @@ namespace ArbitraryBitsAwsInfra
             Amazon.CDK.Tags.Of(app).Add("AppName", "Example");
 
             var vpc = new VpcStack(app, "Vpc", new StackProps { Env = env });
+            var ec2 = new Ec2Stack(app, "EC2", vpc.Vpc, new StackProps { Env = env });
 
             app.Synth();
         }

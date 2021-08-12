@@ -5,10 +5,11 @@ namespace ArbitraryBitsAwsInfra
 {
     public class VpcStack : Stack
     {
+        internal Vpc Vpc { get; set; }
         internal VpcStack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
         {
             // create vpc
-            var vpc = new Vpc(this, "ExampleVPC", new VpcProps {
+            Vpc = new Vpc(this, "ExampleVPC", new VpcProps {
                 Cidr = "10.0.0.0/16",
                 MaxAzs = 1,
                 NatGateways = 0,
@@ -27,11 +28,11 @@ namespace ArbitraryBitsAwsInfra
             });
 
             // add example tag
-            Amazon.CDK.Tags.Of(vpc).Add("ExampleProperty", "Value");
+            Amazon.CDK.Tags.Of(Vpc).Add("ExampleProperty", "Value");
 
             var cfn = new CfnOutput(this, "VpcIdOutput", new CfnOutputProps {
                 ExportName = "VPCId",
-                Value = vpc.VpcId
+                Value = Vpc.VpcId
             });
         }
     }
