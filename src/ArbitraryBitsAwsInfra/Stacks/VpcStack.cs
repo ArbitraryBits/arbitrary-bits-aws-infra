@@ -11,13 +11,13 @@ namespace ArbitraryBitsAwsInfra
             // create vpc
             Vpc = new Vpc(this, "ExampleVPC", new VpcProps {
                 Cidr = "10.0.0.0/16",
-                MaxAzs = 1,
+                MaxAzs = 2,
                 NatGateways = 0,
                 SubnetConfiguration = new [] {
                     new SubnetConfiguration() {
                         Name = "public-subnet",
                         SubnetType = SubnetType.PUBLIC,
-                        CidrMask = 24
+                        CidrMask = 24,
                     },
                     new SubnetConfiguration() {
                         Name = "isolated-subnet",

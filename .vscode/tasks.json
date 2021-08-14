@@ -13,7 +13,7 @@
         },
         {
             "label": "Destroy All",
-            "command": "cdk destroy --all --require-approval never",
+            "command": "cdk destroy --all --force",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
