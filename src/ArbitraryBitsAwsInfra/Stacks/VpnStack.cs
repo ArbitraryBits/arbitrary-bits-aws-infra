@@ -10,9 +10,6 @@ namespace ArbitraryBitsAwsInfra
         internal Vpc Vpc { get; set; }
         internal VpnStack(Construct scope, string id, Vpc vpc, IStackProps props = null) : base(scope, id, props)
         {
-            var clientCert = Certificate.FromCertificateArn(this, "ClientCertificate", "");
-            var serverCert = Certificate.FromCertificateArn(this, "ServerCertificate", "");
-
             var logGroup = new LogGroup(this, "VpnLogGroup", new LogGroupProps() {
                 Retention = RetentionDays.FIVE_DAYS,
                 RemovalPolicy = RemovalPolicy.DESTROY
@@ -20,22 +17,22 @@ namespace ArbitraryBitsAwsInfra
 
             var logStream = logGroup.AddStream("VpnLogStream");
 
-            var endpoint = new ClientVpnEndpoint(this, "", new ClientVpnEndpointProps() {
+            var endpoint = new ClientVpnEndpoint(this, "ExampleVpn", new ClientVpnEndpointProps() {
                 LogStream = logStream,
                 LogGroup = logGroup,
-                ClientCertificateArn = "",
-                ServerCertificateArn = "",
+                ClientCertificateArn = "arn:aws:acm:us-east-1:437377620726:certificate/00a98b07-b37a-4002-9a43-9ce9998c278c",
+                ServerCertificateArn = "arn:aws:acm:us-east-1:437377620726:certificate/3ccfd1f2-ebeb-405c-b290-0921053a125e",
                 Vpc = vpc,
                 SplitTunnel = true,
-                Cidr = "",
+                Cidr = "10.1.0.0/22",
                 VpcSubnets = new SubnetSelection() {
                     OnePerAz = true,
                     SubnetType = SubnetType.ISOLATED
                 }
             });
-            // var endpoint = new CfnClientVpnEndpoint(this, "VpnEndpoint", new CfnClientVpnEndpointProps() {
-            //     AuthenticationOptions = CfnClientVpnEndpoint.CertificateAuthenticationRequestProperty
-            // });
+
+            Amazon.CDK.Tags.Of(logGroup).Add("Stack", "VpnStack");
+            Amazon.CDK.Tags.Of(endpoint).Add("Stack", "VpnStack");
         }
     }
 }

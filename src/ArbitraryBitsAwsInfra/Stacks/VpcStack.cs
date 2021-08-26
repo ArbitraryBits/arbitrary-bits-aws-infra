@@ -27,8 +27,7 @@ namespace ArbitraryBitsAwsInfra
                 }
             });
 
-            // add example tag
-            Amazon.CDK.Tags.Of(Vpc).Add("ExampleProperty", "Value");
+            Amazon.CDK.Tags.Of(Vpc).Add("Stack", "VpcStack");
 
             var cfn = new CfnOutput(this, "VpcIdOutput", new CfnOutputProps {
                 ExportName = "VPCId",
