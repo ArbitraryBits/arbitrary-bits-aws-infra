@@ -9,7 +9,7 @@ namespace ArbitraryBitsAwsInfra
 {
     public class RdsStack : Stack
     {
-        internal RdsStack(Construct scope, string id, Vpc vpc, Instance_ client, IStackProps props = null) : base(scope, id, props)
+        internal RdsStack(Construct scope, string id, Vpc vpc, Instance_ bastionHost, IStackProps props = null) : base(scope, id, props)
         {
             var context = this.Node.TryGetContext("dev") as Dictionary<String, Object>;
 
@@ -19,7 +19,7 @@ namespace ArbitraryBitsAwsInfra
                 SecurityGroupName = "RDS-DB-SG",
                 AllowAllOutbound = false
             });
-            sg.Connections.AllowFrom(client, new Port(new PortProps() 
+            sg.Connections.AllowFrom(bastionHost, new Port(new PortProps() 
             { 
                 StringRepresentation = "3306",
                 Protocol = Protocol.TCP, 
