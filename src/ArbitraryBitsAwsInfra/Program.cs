@@ -1,7 +1,6 @@
 ﻿using Amazon.CDK;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ArbitraryBitsAwsInfra
 {
@@ -21,8 +20,8 @@ namespace ArbitraryBitsAwsInfra
             // tag all app items
             Amazon.CDK.Tags.Of(app).Add("Creator", "CDK");
 
-            var vpc = new VpcStack(app, "Vpc", new StackProps { Env = env });
-            var bastionHost = new BastionHostStack(app, "BastionHost", vpc.Vpc, new StackProps { Env = env });
+            // var vpc = new VpcStack(app, "Vpc", new StackProps { Env = env });
+            // var bastionHost = new BastionHostStack(app, "BastionHost", vpc.Vpc, new StackProps { Env = env });
             // var ec2 = new Ec2Stack(app, "EC2", vpc.Vpc, new StackProps { Env = env });
             // var rds = new RdsStack(app, "RDS", vpc.Vpc, ec2.Instance, new StackProps { Env = env });
             // var vpn = new VpnStack(app, "Vpn", vpc.Vpc, new StackProps { Env = env });
