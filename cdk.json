@@ -6,7 +6,8 @@
       "account": "437377620726",
       "region": "us-east-1",
       "mainAvailabilityZone": "us-east-1a",
-      "bastionHostKey": "aws-us-east-1"
+      "bastionHostKey": "aws-us-east-1",
+      "databaseAllowIp": "90.154.70.138/32"
     },
     "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": true,
     "@aws-cdk/core:enableStackNameDuplicates": "true",
