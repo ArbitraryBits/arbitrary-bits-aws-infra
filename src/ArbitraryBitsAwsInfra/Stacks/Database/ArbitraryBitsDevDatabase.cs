@@ -84,3 +84,36 @@ namespace ArbitraryBitsAwsInfra
         }
     }
 }
+
+/*
+// ServerlessCluster example
+var db = new ServerlessCluster(this, "ArbitrraryBitsDevDatabaseClusterId", new ServerlessClusterProps() {
+    Engine = DatabaseClusterEngine.AuroraMysql(new AuroraMysqlClusterEngineProps() {
+        Version = AuroraMysqlEngineVersion.VER_2_07_1
+    }),
+    Credentials = Credentials.FromGeneratedSecret("adminuser"),
+    DefaultDatabaseName = "DefaultDatabase",
+    ClusterIdentifier = "ArbitrraryBitsDevDatabaseCluster",
+    DeletionProtection = false,
+    BackupRetention = Duration.Days(7),
+    RemovalPolicy = RemovalPolicy.DESTROY,
+    Scaling = new ServerlessScalingOptions() {
+        AutoPause = Duration.Minutes(5),
+        MinCapacity = AuroraCapacityUnit.ACU_1,
+        MaxCapacity = AuroraCapacityUnit.ACU_2
+    },
+    Vpc = vpc,
+    SubnetGroup = new SubnetGroup(this, "ArbitrraryBitsDevDatabaseSubnetGroupId", new SubnetGroupProps() 
+    {
+        Description = "Subnet group for DB",
+        Vpc = vpc,
+        RemovalPolicy = RemovalPolicy.DESTROY,
+        SubnetGroupName = "ArbitrraryBitsDevDatabaseSubnetGroup",
+        VpcSubnets = new SubnetSelection() 
+        {
+            SubnetType = SubnetType.PUBLIC
+        }
+    }),
+    SecurityGroups = new ISecurityGroup[] { sg },
+});
+*/
