@@ -7,46 +7,54 @@ using Amazon.CDK.AWS.RDS;
 
 namespace ArbitraryBitsAwsInfra
 {
-    public class ArbitraryBitsDevDatabase : Stack
+    public class ArbitraryBitsDatabase : Stack
     {
-        internal ArbitraryBitsDevDatabase(Construct scope, string id, Vpc vpc, IStackProps props = null) : base(scope, id, props)
+        internal ArbitraryBitsDatabase(Construct scope, string id, Vpc vpc, IStackProps props = null) : base(scope, id, props)
         {
-            var context = this.Node.TryGetContext("dev") as Dictionary<String, Object>;
+            var context = this.Node.TryGetContext("settings") as Dictionary<String, Object>;
 
-            var sg = new SecurityGroup(this, "ArbitraryBitsDevDatabaseSecurityGroupId", new SecurityGroupProps 
+            var sg = new SecurityGroup(this, "ArbitraryBitsDatabaseSecurityGroupId", new SecurityGroupProps 
             {
                 Vpc = vpc,
-                SecurityGroupName = "ArbitrraryBitsDevDatabaseSecurityGroup",
+                SecurityGroupName = "ArbitrraryBitsDatabaseSecurityGroup",
                 AllowAllOutbound = false
             });
             sg.Connections.AllowFrom(
                 Peer.Ipv4(context["databaseAllowIp"] as string), 
                 new Port(new PortProps() 
                 { 
-                    StringRepresentation = "3306",
+                    StringRepresentation = "5432",
                     Protocol = Protocol.TCP, 
-                    FromPort = 3306,
-                    ToPort = 3306,
+                    FromPort = 5432,
+                    ToPort = 5432,
                 }),
                 "Allow database connections from my IP"
             );
             
             // ServerlessCluster
-            var db = new DatabaseInstance(this, "ArbitrraryBitsDevDatabaseId", new DatabaseInstanceProps() 
+            var db = new DatabaseInstance(this, "ArbitrraryBitsDatabaseId", new DatabaseInstanceProps() 
             {
-                InstanceIdentifier = "ArbitrraryBitsDevDatabase",
+                InstanceIdentifier = "ArbitrraryBitsDatabase",
                 Credentials = Credentials.FromGeneratedSecret("adminuser"),
-                DatabaseName = "TestDB",
-                Engine = DatabaseInstanceEngine.Mysql(new MySqlInstanceEngineProps() 
-                { 
-                    Version = MysqlEngineVersion.VER_5_7_33
+                Engine = DatabaseInstanceEngine.Postgres(new PostgresInstanceEngineProps() {
+                    Version = PostgresEngineVersion.VER_13_3
                 }),
-                PubliclyAccessible = true,
-                Port = 3306,
+                DatabaseName = "CDK", 
+                Port = 5432,
                 AllocatedStorage = 10,
-                StorageType = StorageType.STANDARD,
+                MaxAllocatedStorage = 100,
+                StorageType = StorageType.GP2,
+                PubliclyAccessible = true,
                 MultiAz = false,
-                CloudwatchLogsExports = new [] { "audit", "error", "general", "slowquery" },
+                PreferredBackupWindow = "02:00-04:00", // hh24:mi-hh24:mi
+                PreferredMaintenanceWindow = "Sun:04:00-Sun:06:00", // ddd:hh24:mi-ddd:hh24:mi
+                AllowMajorVersionUpgrade = false,
+                AutoMinorVersionUpgrade = true,
+                MonitoringInterval = Duration.Minutes(1),
+                CloudwatchLogsExports = new [] { "audit", "error", "general", "slowquery", "postgresql", "upgrade" },
+                CloudwatchLogsRetention = Amazon.CDK.AWS.Logs.RetentionDays.ONE_MONTH,
+                PerformanceInsightRetention = PerformanceInsightRetention.DEFAULT,
+                EnablePerformanceInsights = true,
                 InstanceType = InstanceType.Of(InstanceClass.BURSTABLE3, InstanceSize.MICRO),
                 DeletionProtection = false,
                 DeleteAutomatedBackups = true,
@@ -54,12 +62,14 @@ namespace ArbitraryBitsAwsInfra
                 RemovalPolicy = RemovalPolicy.DESTROY,
                 Vpc = vpc,
                 SecurityGroups = new ISecurityGroup[] { sg },
-                SubnetGroup = new SubnetGroup(this, "ArbitrraryBitsDevDatabaseSubnetGroupId", new SubnetGroupProps() 
+                AvailabilityZone = context["mainAvailabilityZone"] as String,
+                ParameterGroup = ParameterGroup.FromParameterGroupName(this, "DbParameterGroup", "default.postgres13"),
+                SubnetGroup = new SubnetGroup(this, "ArbitrraryBitsDatabaseSubnetGroupId", new SubnetGroupProps() 
                 {
                     Description = "Subnet group for DB",
                     Vpc = vpc,
                     RemovalPolicy = RemovalPolicy.DESTROY,
-                    SubnetGroupName = "ArbitrraryBitsDevDatabaseSubnetGroup",
+                    SubnetGroupName = "ArbitrraryBitsDatabaseSubnetGroup",
                     VpcSubnets = new SubnetSelection() 
                     {
                         SubnetType = SubnetType.PUBLIC
@@ -67,53 +77,14 @@ namespace ArbitraryBitsAwsInfra
                 })
             });
 
-            Amazon.CDK.Tags.Of(sg).Add("Type", "AB-DB-DEV-RDS");
-            Amazon.CDK.Tags.Of(db).Add("Type", "AB-DB-DEV-RDS");
+            Amazon.CDK.Tags.Of(sg).Add("Type", "AB-DB-RDS");
+            Amazon.CDK.Tags.Of(db).Add("Type", "AB-DB-RDS");
 
             new CfnOutput(this, "DbInstanceEndpointAddressOutputId", new CfnOutputProps
             {
                 Value = db.DbInstanceEndpointAddress,
                 Description = "DB Instance endpoint adress"
             });
-
-            new CfnOutput(this, "DbConnectionStringOutputId", new CfnOutputProps
-            {
-                Value = string.Format("mysql -h {0} -P 3306 -u adminuser -p", db.DbInstanceEndpointAddress),
-                Description = "DB Instance connection string"
-            });
         }
     }
 }
-
-/*
-// ServerlessCluster example
-var db = new ServerlessCluster(this, "ArbitrraryBitsDevDatabaseClusterId", new ServerlessClusterProps() {
-    Engine = DatabaseClusterEngine.AuroraMysql(new AuroraMysqlClusterEngineProps() {
-        Version = AuroraMysqlEngineVersion.VER_2_07_1
-    }),
-    Credentials = Credentials.FromGeneratedSecret("adminuser"),
-    DefaultDatabaseName = "DefaultDatabase",
-    ClusterIdentifier = "ArbitrraryBitsDevDatabaseCluster",
-    DeletionProtection = false,
-    BackupRetention = Duration.Days(7),
-    RemovalPolicy = RemovalPolicy.DESTROY,
-    Scaling = new ServerlessScalingOptions() {
-        AutoPause = Duration.Minutes(5),
-        MinCapacity = AuroraCapacityUnit.ACU_1,
-        MaxCapacity = AuroraCapacityUnit.ACU_2
-    },
-    Vpc = vpc,
-    SubnetGroup = new SubnetGroup(this, "ArbitrraryBitsDevDatabaseSubnetGroupId", new SubnetGroupProps() 
-    {
-        Description = "Subnet group for DB",
-        Vpc = vpc,
-        RemovalPolicy = RemovalPolicy.DESTROY,
-        SubnetGroupName = "ArbitrraryBitsDevDatabaseSubnetGroup",
-        VpcSubnets = new SubnetSelection() 
-        {
-            SubnetType = SubnetType.PUBLIC
-        }
-    }),
-    SecurityGroups = new ISecurityGroup[] { sg },
-});
-*/
