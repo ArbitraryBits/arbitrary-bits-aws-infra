@@ -2,8 +2,8 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Deploy All",
-            "command": "cdk deploy --all --require-approval never",
+            "label": "Deploy DB",
+            "command": "cdk deploy DbVpcStack DbStack --require-approval never",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
@@ -12,51 +12,14 @@
             }
         },
         {
-            "label": "Destroy All",
-            "command": "cdk destroy --all --force",
+            "label": "Destroy DB",
+            "command": "cdk destroy DbVpcStack DbStack",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
             }
-        },
-        {
-            "label": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/src/ArbitraryBitsAwsInfra/ArbitraryBitsAwsInfra.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "publish",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/src/ArbitraryBitsAwsInfra/ArbitraryBitsAwsInfra.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "watch",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "watch",
-                "run",
-                "${workspaceFolder}/src/ArbitraryBitsAwsInfra/ArbitraryBitsAwsInfra.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
         }
     ]
 }
