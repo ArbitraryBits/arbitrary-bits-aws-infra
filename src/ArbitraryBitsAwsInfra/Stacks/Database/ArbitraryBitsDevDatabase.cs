@@ -16,8 +16,7 @@ namespace ArbitraryBitsAwsInfra
             var sg = new SecurityGroup(this, "ArbitraryBitsDatabaseSecurityGroupId", new SecurityGroupProps 
             {
                 Vpc = vpc,
-                SecurityGroupName = "ArbitrraryBitsDatabaseSecurityGroup",
-                AllowAllOutbound = false
+                SecurityGroupName = "ArbitrraryBitsDatabaseSecurityGroup"
             });
             sg.Connections.AllowFrom(
                 Peer.Ipv4(context["databaseAllowIp"] as string), 
@@ -31,7 +30,6 @@ namespace ArbitraryBitsAwsInfra
                 "Allow database connections from my IP"
             );
             
-            // ServerlessCluster
             var db = new DatabaseInstance(this, "ArbitrraryBitsDatabaseId", new DatabaseInstanceProps() 
             {
                 InstanceIdentifier = "ArbitrraryBitsDatabase",
@@ -39,7 +37,6 @@ namespace ArbitraryBitsAwsInfra
                 Engine = DatabaseInstanceEngine.Postgres(new PostgresInstanceEngineProps() {
                     Version = PostgresEngineVersion.VER_13_3
                 }),
-                DatabaseName = "CDK", 
                 Port = 5432,
                 AllocatedStorage = 10,
                 MaxAllocatedStorage = 100,
@@ -51,11 +48,11 @@ namespace ArbitraryBitsAwsInfra
                 AllowMajorVersionUpgrade = false,
                 AutoMinorVersionUpgrade = true,
                 MonitoringInterval = Duration.Minutes(1),
-                CloudwatchLogsExports = new [] { "audit", "error", "general", "slowquery", "postgresql", "upgrade" },
+                CloudwatchLogsExports = new [] { "postgresql", "upgrade" },
                 CloudwatchLogsRetention = Amazon.CDK.AWS.Logs.RetentionDays.ONE_MONTH,
                 PerformanceInsightRetention = PerformanceInsightRetention.DEFAULT,
                 EnablePerformanceInsights = true,
-                InstanceType = InstanceType.Of(InstanceClass.BURSTABLE3, InstanceSize.MICRO),
+                InstanceType = InstanceType.Of(InstanceClass.BURSTABLE3, InstanceSize.SMALL),
                 DeletionProtection = false,
                 DeleteAutomatedBackups = true,
                 BackupRetention = Duration.Days(7),
