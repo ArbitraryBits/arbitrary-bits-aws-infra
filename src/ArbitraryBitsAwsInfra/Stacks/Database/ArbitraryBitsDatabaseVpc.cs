@@ -16,6 +16,11 @@ namespace ArbitraryBitsAwsInfra
                 SubnetConfiguration = new [] {
                     new SubnetConfiguration() {
                         Name = "isolated",
+                        SubnetType = SubnetType.ISOLATED,
+                        CidrMask = 24
+                    },
+                    new SubnetConfiguration() {
+                        Name = "public",
                         SubnetType = SubnetType.PUBLIC,
                         CidrMask = 24
                     }

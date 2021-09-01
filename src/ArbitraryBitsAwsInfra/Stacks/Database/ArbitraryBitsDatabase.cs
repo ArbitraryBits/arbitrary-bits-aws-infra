@@ -9,26 +9,16 @@ namespace ArbitraryBitsAwsInfra
 {
     public class ArbitraryBitsDatabase : Stack
     {
+        internal SecurityGroup SecurityGroup { get; set; }
         internal ArbitraryBitsDatabase(Construct scope, string id, Vpc vpc, IStackProps props = null) : base(scope, id, props)
         {
             var context = this.Node.TryGetContext("settings") as Dictionary<String, Object>;
 
-            var sg = new SecurityGroup(this, "ArbitraryBitsDatabaseSecurityGroupId", new SecurityGroupProps 
+            SecurityGroup = new SecurityGroup(this, "ArbitraryBitsDatabaseSecurityGroupId", new SecurityGroupProps 
             {
                 Vpc = vpc,
                 SecurityGroupName = "ArbitrraryBitsDatabaseSecurityGroup"
             });
-            sg.Connections.AllowFrom(
-                Peer.Ipv4(context["databaseAllowIp"] as string), 
-                new Port(new PortProps() 
-                { 
-                    StringRepresentation = "5432",
-                    Protocol = Protocol.TCP, 
-                    FromPort = 5432,
-                    ToPort = 5432,
-                }),
-                "Allow database connections from my IP"
-            );
             
             var db = new DatabaseInstance(this, "ArbitrraryBitsDatabaseId", new DatabaseInstanceProps() 
             {
@@ -58,7 +48,7 @@ namespace ArbitraryBitsAwsInfra
                 BackupRetention = Duration.Days(7),
                 RemovalPolicy = RemovalPolicy.DESTROY,
                 Vpc = vpc,
-                SecurityGroups = new ISecurityGroup[] { sg },
+                SecurityGroups = new ISecurityGroup[] { SecurityGroup },
                 AvailabilityZone = context["mainAvailabilityZone"] as String,
                 ParameterGroup = ParameterGroup.FromParameterGroupName(this, "DbParameterGroup", "default.postgres13"),
                 SubnetGroup = new SubnetGroup(this, "ArbitrraryBitsDatabaseSubnetGroupId", new SubnetGroupProps() 
@@ -69,12 +59,12 @@ namespace ArbitraryBitsAwsInfra
                     SubnetGroupName = "ArbitrraryBitsDatabaseSubnetGroup",
                     VpcSubnets = new SubnetSelection() 
                     {
-                        SubnetType = SubnetType.PUBLIC
+                        SubnetType = SubnetType.ISOLATED
                     }
                 })
             });
 
-            Amazon.CDK.Tags.Of(sg).Add("Type", "AB-DB-RDS");
+            Amazon.CDK.Tags.Of(SecurityGroup).Add("Type", "AB-DB-RDS");
             Amazon.CDK.Tags.Of(db).Add("Type", "AB-DB-RDS");
 
             new CfnOutput(this, "DbInstanceEndpointAddressOutputId", new CfnOutputProps

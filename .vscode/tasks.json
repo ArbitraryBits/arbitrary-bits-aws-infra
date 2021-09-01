@@ -20,6 +20,26 @@
             "runOptions": {
                 "instanceLimit": 1
             }
+        },
+        {
+            "label": "Deploy DB BastionHost",
+            "command": "cdk deploy DbBastionHostStack --require-approval never",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
+        },
+        {
+            "label": "Destroy DB BastionHost",
+            "command": "cdk destroy DbBastionHostStack --force",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
         }
     ]
 }
