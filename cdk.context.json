@@ -2,5 +2,9 @@
   "availability-zones:account=437377620726:region=us-east-1": [
     "us-east-1a",
     "us-east-1b"
-  ]
+  ],
+  "security-group:account=437377620726:region=us-east-1:securityGroupId=sg-0fa9c6ead5a0d7e74": {
+    "securityGroupId": "sg-0fa9c6ead5a0d7e74",
+    "allowAllOutbound": false
+  }
 }

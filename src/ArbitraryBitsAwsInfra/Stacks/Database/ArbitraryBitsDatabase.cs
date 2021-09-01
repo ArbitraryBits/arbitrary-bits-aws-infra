@@ -9,12 +9,11 @@ namespace ArbitraryBitsAwsInfra
 {
     public class ArbitraryBitsDatabase : Stack
     {
-        internal SecurityGroup SecurityGroup { get; set; }
         internal ArbitraryBitsDatabase(Construct scope, string id, Vpc vpc, IStackProps props = null) : base(scope, id, props)
         {
             var context = this.Node.TryGetContext("settings") as Dictionary<String, Object>;
 
-            SecurityGroup = new SecurityGroup(this, "ArbitraryBitsDatabaseSecurityGroupId", new SecurityGroupProps 
+            var sg = new SecurityGroup(this, "ArbitraryBitsDatabaseSecurityGroupId", new SecurityGroupProps 
             {
                 Vpc = vpc,
                 SecurityGroupName = "ArbitrraryBitsDatabaseSecurityGroup"
@@ -48,7 +47,7 @@ namespace ArbitraryBitsAwsInfra
                 BackupRetention = Duration.Days(7),
                 RemovalPolicy = RemovalPolicy.DESTROY,
                 Vpc = vpc,
-                SecurityGroups = new ISecurityGroup[] { SecurityGroup },
+                SecurityGroups = new ISecurityGroup[] { sg },
                 AvailabilityZone = context["mainAvailabilityZone"] as String,
                 ParameterGroup = ParameterGroup.FromParameterGroupName(this, "DbParameterGroup", "default.postgres13"),
                 SubnetGroup = new SubnetGroup(this, "ArbitrraryBitsDatabaseSubnetGroupId", new SubnetGroupProps() 
@@ -64,13 +63,20 @@ namespace ArbitraryBitsAwsInfra
                 })
             });
 
-            Amazon.CDK.Tags.Of(SecurityGroup).Add("Type", "AB-DB-RDS");
+            Amazon.CDK.Tags.Of(sg).Add("Type", "AB-DB-RDS");
             Amazon.CDK.Tags.Of(db).Add("Type", "AB-DB-RDS");
-
+            
             new CfnOutput(this, "DbInstanceEndpointAddressOutputId", new CfnOutputProps
             {
                 Value = db.DbInstanceEndpointAddress,
                 Description = "DB Instance endpoint adress"
+            });
+
+            new CfnOutput(this, "DbInstanceSecurityGroupOutputId", new CfnOutputProps
+            {
+                Value = sg.SecurityGroupId,
+                Description = "DB Instance security group id",
+                ExportName = "DbInstanceSecurityGroupId"
             });
         }
     }

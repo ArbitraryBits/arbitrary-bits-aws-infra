@@ -28,7 +28,7 @@ namespace ArbitraryBitsAwsInfra
             });
 
             Amazon.CDK.Tags.Of(Vpc).Add("Type", "AB-DB-VPC");
-
+            
             var cfn = new CfnOutput(this, "VpcIdOutput", new CfnOutputProps {
                 ExportName = "VpcId",
                 Value = Vpc.VpcId

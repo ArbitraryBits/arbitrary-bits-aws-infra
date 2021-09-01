@@ -8,8 +8,7 @@ namespace ArbitraryBitsAwsInfra
 {
     public class ArbitraryBitsDbBastionHost : Stack
     {
-        internal Instance_ Instance { get; set; }
-        internal ArbitraryBitsDbBastionHost(Construct scope, string id, Vpc vpc, SecurityGroup dbSecurityGroup, IStackProps props = null) : base(scope, id, props)
+        internal ArbitraryBitsDbBastionHost(Construct scope, string id, Vpc vpc, IStackProps props = null) : base(scope, id, props)
         {
             var context = this.Node.TryGetContext("settings") as Dictionary<String, Object>;
 
@@ -40,7 +39,7 @@ namespace ArbitraryBitsAwsInfra
                 "Allow ssh access from my IP"
             );
 
-            Instance = new Instance_(this, "DbBastionHostId", new InstanceProps() 
+            var instance = new Instance_(this, "DbBastionHostId", new InstanceProps() 
             {
                 InstanceType = new InstanceType("t2.micro"),
                 InstanceName = "BastionHost",
@@ -57,10 +56,15 @@ namespace ArbitraryBitsAwsInfra
             var cfn = new CfnOutput(this, "DbBastionHostDnsOutputId", new CfnOutputProps 
             {
                 ExportName = "DNS",
-                Value = Instance.InstancePublicDnsName
+                Value = instance.InstancePublicDnsName
             });
 
-            dbSecurityGroup.Connections.AllowFrom(Instance, new Port(new PortProps() 
+            var dbSecurityGroup = SecurityGroup.FromLookup(
+                this, 
+                "ArbitraryBitsBastionHostDatabaseSecurityGroupId", 
+                context["dbInstanceSecurityGroupId"] as String);
+
+            dbSecurityGroup.Connections.AllowFrom(instance, new Port(new PortProps() 
             { 
                 StringRepresentation = "5432",
                 Protocol = Protocol.TCP, 
