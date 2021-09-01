@@ -6,5 +6,9 @@
   "security-group:account=437377620726:region=us-east-1:securityGroupId=sg-0fa9c6ead5a0d7e74": {
     "securityGroupId": "sg-0fa9c6ead5a0d7e74",
     "allowAllOutbound": false
+  },
+  "security-group:account=437377620726:region=us-east-1:securityGroupId=sg-0b199d687c69c634a": {
+    "securityGroupId": "sg-0b199d687c69c634a",
+    "allowAllOutbound": false
   }
 }

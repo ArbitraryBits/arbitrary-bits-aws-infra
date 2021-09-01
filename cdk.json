@@ -6,7 +6,7 @@
       "allowIp": "90.154.70.138/32",
       "dbBastionHostKey": "aws-us-east-1",
       "mainAvailabilityZone": "us-east-1a",
-      "dbInstanceSecurityGroupId": "sg-0fa9c6ead5a0d7e74"
+      "dbInstanceSecurityGroupId": "sg-0b199d687c69c634a"
     },
     "dev": {
       "account": "437377620726",

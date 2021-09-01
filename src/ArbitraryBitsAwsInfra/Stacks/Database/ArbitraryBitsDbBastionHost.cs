@@ -71,6 +71,17 @@ namespace ArbitraryBitsAwsInfra
                 FromPort = 5432,
                 ToPort = 5432,
             }), "Allow connections from Bastion host instance to DB");
+
+            var sshCommand = String.Format("ssh -i ~/.ssh/{0}.pem -L 5432:{1}:5432 ec2-user@{2}", 
+                    context["dbBastionHostKey"] as string,
+                    Fn.ImportValue("DbInstanceEndpointAddressOutput"), 
+                    instance.InstancePublicDnsName);
+
+            new CfnOutput(this, "DbInstanceSshCommandOutputId", new CfnOutputProps
+            {
+                Value = sshCommand,
+                Description = "DB Instance endpoint adress"
+            });
         }
     }
 }

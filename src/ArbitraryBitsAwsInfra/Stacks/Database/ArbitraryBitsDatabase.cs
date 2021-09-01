@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using Amazon.CDK;
 using Amazon.CDK.AWS.EC2;
-using Amazon.CDK.AWS.IAM;
 using Amazon.CDK.AWS.RDS;
+using Amazon.CDK.AWS.SecretsManager;
 
 namespace ArbitraryBitsAwsInfra
 {
@@ -18,12 +18,12 @@ namespace ArbitraryBitsAwsInfra
                 Vpc = vpc,
                 SecurityGroupName = "ArbitrraryBitsDatabaseSecurityGroup"
             });
-            
+   
             var db = new DatabaseInstance(this, "ArbitrraryBitsDatabaseId", new DatabaseInstanceProps() 
             {
                 InstanceIdentifier = "ArbitrraryBitsDatabase",
-                Credentials = Credentials.FromGeneratedSecret("adminuser"),
-                Engine = DatabaseInstanceEngine.Postgres(new PostgresInstanceEngineProps() {
+                Engine = DatabaseInstanceEngine.Postgres(new PostgresInstanceEngineProps() 
+                {
                     Version = PostgresEngineVersion.VER_13_3
                 }),
                 Port = 5432,
@@ -63,13 +63,31 @@ namespace ArbitraryBitsAwsInfra
                 })
             });
 
+            db.AddRotationSingleUser(new RotationSingleUserOptions() 
+            {
+                AutomaticallyAfter = Duration.Days(30)
+            });
+
+            var adminuser = new DatabaseSecret(this, "ArbitrraryBitsDatabaseAdminuserSecretId", new DatabaseSecretProps() 
+            {
+                Username = "adminuser",
+                SecretName = "ArbitrraryBitsDatabaseAdminuserSecret",
+                MasterSecret = db.Secret
+            });
+            db.AddRotationMultiUser("ArbitrraryBitsDatabaseAdminuserRotationId", new RotationMultiUserOptions() 
+            {
+                Secret = adminuser.Attach(db),
+                AutomaticallyAfter = Duration.Days(1)
+            });
+
             Amazon.CDK.Tags.Of(sg).Add("Type", "AB-DB-RDS");
             Amazon.CDK.Tags.Of(db).Add("Type", "AB-DB-RDS");
             
             new CfnOutput(this, "DbInstanceEndpointAddressOutputId", new CfnOutputProps
             {
                 Value = db.DbInstanceEndpointAddress,
-                Description = "DB Instance endpoint adress"
+                Description = "DB Instance endpoint adress",
+                ExportName = "DbInstanceEndpointAddressOutput"
             });
 
             new CfnOutput(this, "DbInstanceSecurityGroupOutputId", new CfnOutputProps
