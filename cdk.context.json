@@ -2,5 +2,64 @@
   "availability-zones:account=437377620726:region=us-east-1": [
     "us-east-1a",
     "us-east-1b"
-  ]
+  ],
+  "security-group:account=437377620726:region=us-east-1:securityGroupId=sg-0fa9c6ead5a0d7e74": {
+    "securityGroupId": "sg-0fa9c6ead5a0d7e74",
+    "allowAllOutbound": false
+  },
+  "security-group:account=437377620726:region=us-east-1:securityGroupId=sg-0b199d687c69c634a": {
+    "securityGroupId": "sg-0b199d687c69c634a",
+    "allowAllOutbound": false
+  },
+  "security-group:account=437377620726:region=us-east-1:securityGroupId=sg-057a036fc6de4412c": {
+    "securityGroupId": "sg-057a036fc6de4412c",
+    "allowAllOutbound": false
+  },
+  "vpc-provider:account=437377620726:filter.tag:Type=AB-DB-VPC:region=us-east-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-04083db6558b0e29e",
+    "vpcCidrBlock": "10.0.0.0/16",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-0c7dfec72e667bb35",
+            "cidr": "10.0.2.0/24",
+            "availabilityZone": "us-east-1a",
+            "routeTableId": "rtb-0c9cff64644b089bd"
+          },
+          {
+            "subnetId": "subnet-0ac3eb23e9a1699b9",
+            "cidr": "10.0.3.0/24",
+            "availabilityZone": "us-east-1b",
+            "routeTableId": "rtb-0cdb0aec15cb6f1d4"
+          }
+        ]
+      },
+      {
+        "name": "isolated",
+        "type": "Isolated",
+        "subnets": [
+          {
+            "subnetId": "subnet-0223b1ade1d2e7a74",
+            "cidr": "10.0.0.0/24",
+            "availabilityZone": "us-east-1a",
+            "routeTableId": "rtb-0e093b5981bc64c2e"
+          },
+          {
+            "subnetId": "subnet-06c16c3cfdf2342bd",
+            "cidr": "10.0.1.0/24",
+            "availabilityZone": "us-east-1b",
+            "routeTableId": "rtb-04831665819619531"
+          }
+        ]
+      }
+    ]
+  },
+  "security-group:account=437377620726:region=us-east-1:securityGroupId=sg-0d89195c5cc57e7e5": {
+    "securityGroupId": "sg-0d89195c5cc57e7e5",
+    "allowAllOutbound": false
+  }
 }
