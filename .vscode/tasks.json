@@ -23,7 +23,7 @@
         },
         {
             "label": "Deploy DB BastionHost",
-            "command": "cdk deploy DbBastionHostStack --require-approval never",
+            "command": "cdk deploy DbBastionHostVpcStack DbBastionHostStack --require-approval never",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
@@ -33,7 +33,7 @@
         },
         {
             "label": "Destroy DB BastionHost",
-            "command": "cdk destroy DbBastionHostStack --force",
+            "command": "cdk destroy DbBastionHostVpcStack DbBastionHostStack --force",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],

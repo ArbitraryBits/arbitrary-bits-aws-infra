@@ -18,10 +18,17 @@ namespace ArbitraryBitsAwsInfra
                 Vpc = vpc,
                 SecurityGroupName = "ArbitrraryBitsDatabaseSecurityGroup"
             });
-   
+
+            var adminuser = new DatabaseSecret(this, "ArbitrraryBitsDatabaseAdminuserSecretId", new DatabaseSecretProps() 
+            {
+                Username = "adminuser",
+                SecretName = "ArbitrraryBitsDatabaseAdminuserSecret"
+            });
+            
             var db = new DatabaseInstance(this, "ArbitrraryBitsDatabaseId", new DatabaseInstanceProps() 
             {
                 InstanceIdentifier = "ArbitrraryBitsDatabase",
+                Credentials = Credentials.FromSecret(adminuser),
                 Engine = DatabaseInstanceEngine.Postgres(new PostgresInstanceEngineProps() 
                 {
                     Version = PostgresEngineVersion.VER_13_3
@@ -30,7 +37,7 @@ namespace ArbitraryBitsAwsInfra
                 AllocatedStorage = 10,
                 MaxAllocatedStorage = 100,
                 StorageType = StorageType.GP2,
-                PubliclyAccessible = true,
+                PubliclyAccessible = false,
                 MultiAz = false,
                 PreferredBackupWindow = "02:00-04:00", // hh24:mi-hh24:mi
                 PreferredMaintenanceWindow = "Sun:04:00-Sun:06:00", // ddd:hh24:mi-ddd:hh24:mi
@@ -62,21 +69,9 @@ namespace ArbitraryBitsAwsInfra
                     }
                 })
             });
-
+            
             db.AddRotationSingleUser(new RotationSingleUserOptions() 
             {
-                AutomaticallyAfter = Duration.Days(30)
-            });
-
-            var adminuser = new DatabaseSecret(this, "ArbitrraryBitsDatabaseAdminuserSecretId", new DatabaseSecretProps() 
-            {
-                Username = "adminuser",
-                SecretName = "ArbitrraryBitsDatabaseAdminuserSecret",
-                MasterSecret = db.Secret
-            });
-            db.AddRotationMultiUser("ArbitrraryBitsDatabaseAdminuserRotationId", new RotationMultiUserOptions() 
-            {
-                Secret = adminuser.Attach(db),
                 AutomaticallyAfter = Duration.Days(1)
             });
 

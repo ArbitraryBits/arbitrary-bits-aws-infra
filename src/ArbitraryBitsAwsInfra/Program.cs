@@ -22,7 +22,10 @@ namespace ArbitraryBitsAwsInfra
 
             var dbVpc = new ArbitraryBitsDatabaseVpc(app, "DbVpcStack", new StackProps { Env = env });
             var rds = new ArbitraryBitsDatabase(app, "DbStack", dbVpc.Vpc, new StackProps { Env = env });
-            var dbBastionHost = new ArbitraryBitsDbBastionHost(app, "DbBastionHostStack", dbVpc.Vpc, new StackProps { Env = env });
+            
+            var dbBastionHostVpc = new ArbitraryBitsDatabaseBastionHostVpc(app, "DbBastionHostVpcStack", new StackProps { Env = env });
+            dbBastionHostVpc.Node.AddDependency(dbVpc);
+            var dbBastionHost = new ArbitraryBitsDbBastionHost(app, "DbBastionHostStack", dbBastionHostVpc.BastionHostVpc, new StackProps { Env = env });
             dbBastionHost.Node.AddDependency(rds);
             // var vpc = new VpcStack(app, "Vpc", new StackProps { Env = env });
             // var bastionHost = new BastionHostStack(app, "BastionHost", vpc.Vpc, new StackProps { Env = env });

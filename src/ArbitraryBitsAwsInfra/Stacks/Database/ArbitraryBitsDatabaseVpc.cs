@@ -18,11 +18,6 @@ namespace ArbitraryBitsAwsInfra
                         Name = "isolated",
                         SubnetType = SubnetType.ISOLATED,
                         CidrMask = 24
-                    },
-                    new SubnetConfiguration() {
-                        Name = "public",
-                        SubnetType = SubnetType.PUBLIC,
-                        CidrMask = 24
                     }
                 }
             });
@@ -30,7 +25,7 @@ namespace ArbitraryBitsAwsInfra
             Amazon.CDK.Tags.Of(Vpc).Add("Type", "AB-DB-VPC");
             
             var cfn = new CfnOutput(this, "VpcIdOutput", new CfnOutputProps {
-                ExportName = "VpcId",
+                ExportName = "ArbitraryBitsDatabaseVpcId",
                 Value = Vpc.VpcId
             });
         }
