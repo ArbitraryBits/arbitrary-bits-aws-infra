@@ -40,6 +40,26 @@
             "runOptions": {
                 "instanceLimit": 1
             }
+        },
+        {
+            "label": "Deploy iRacing secrets",
+            "command": "cdk deploy IRacingCalendarDbSecretsStack --require-approval never",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
+        },
+        {
+            "label": "Destroy iRacing secrets",
+            "command": "cdk destroy IRacingCalendarDbSecretsStack --force",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
         }
     ]
 }

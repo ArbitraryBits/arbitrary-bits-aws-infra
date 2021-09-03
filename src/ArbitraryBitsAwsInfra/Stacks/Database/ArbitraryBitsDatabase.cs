@@ -9,6 +9,7 @@ namespace ArbitraryBitsAwsInfra
 {
     public class ArbitraryBitsDatabase : Stack
     {
+        internal DatabaseInstance DbInstance { get; set; }
         internal ArbitraryBitsDatabase(Construct scope, string id, Vpc vpc, IStackProps props = null) : base(scope, id, props)
         {
             var context = this.Node.TryGetContext("settings") as Dictionary<String, Object>;
@@ -25,7 +26,7 @@ namespace ArbitraryBitsAwsInfra
                 SecretName = "ArbitrraryBitsDatabaseAdminuserSecret"
             });
             
-            var db = new DatabaseInstance(this, "ArbitrraryBitsDatabaseId", new DatabaseInstanceProps() 
+            DbInstance = new DatabaseInstance(this, "ArbitrraryBitsDatabaseId", new DatabaseInstanceProps() 
             {
                 InstanceIdentifier = "ArbitrraryBitsDatabase",
                 Credentials = Credentials.FromSecret(adminuser),
@@ -70,19 +71,26 @@ namespace ArbitraryBitsAwsInfra
                 })
             });
             
-            db.AddRotationSingleUser(new RotationSingleUserOptions() 
+            DbInstance.AddRotationSingleUser(new RotationSingleUserOptions() 
             {
                 AutomaticallyAfter = Duration.Days(1)
             });
 
             Amazon.CDK.Tags.Of(sg).Add("Type", "AB-DB-RDS");
-            Amazon.CDK.Tags.Of(db).Add("Type", "AB-DB-RDS");
+            Amazon.CDK.Tags.Of(DbInstance).Add("Type", "AB-DB-RDS");
             
             new CfnOutput(this, "DbInstanceEndpointAddressOutputId", new CfnOutputProps
             {
-                Value = db.DbInstanceEndpointAddress,
+                Value = DbInstance.DbInstanceEndpointAddress,
                 Description = "DB Instance endpoint adress",
                 ExportName = "DbInstanceEndpointAddressOutput"
+            });
+
+            new CfnOutput(this, "DbInstanceIdentifierOutputId", new CfnOutputProps
+            {
+                Value = DbInstance.InstanceIdentifier,
+                Description = "DB Instance identifier",
+                ExportName = "DbInstanceIdentifier"
             });
 
             new CfnOutput(this, "DbInstanceSecurityGroupOutputId", new CfnOutputProps
