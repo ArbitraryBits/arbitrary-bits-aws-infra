@@ -9,7 +9,7 @@ namespace ArbitraryBitsAwsInfra
 {
     public class IRacingCalendarDbSecrets : Stack
     {
-        internal IRacingCalendarDbSecrets(Construct scope, string id, DatabaseInstance dbInstance, IStackProps props = null) : base(scope, id, props)
+        internal IRacingCalendarDbSecrets(Construct scope, string id, DatabaseInstance dbInstance, Vpc dbVpc, IStackProps props = null) : base(scope, id, props)
         {
             var context = this.Node.TryGetContext("settings") as Dictionary<String, Object>;
 
@@ -18,6 +18,19 @@ namespace ArbitraryBitsAwsInfra
                 Username = "apiuserdev",
                 SecretName = "ArbitrraryBitsDatabaseApiuserdevSecret"
             });
+
+            // apiuser.Attach(dbInstance);
+
+            // apiuser.AddRotationSchedule("", new RotationScheduleOptions() {
+            //     AutomaticallyAfter = Duration.Days(1),
+            //     HostedRotation = HostedRotation.PostgreSqlSingleUser(new SingleUserHostedRotationOptions() {
+            //         FunctionName = "RotateApiuserdev",
+            //         Vpc = dbVpc,
+            //         VpcSubnets = new SubnetSelection() {
+            //             SubnetType = SubnetType.ISOLATED   
+            //         }
+            //     })
+            // });
             
             dbInstance.AddRotationMultiUser("ArbitrraryBitsDatabaseApiuserdevSecretRotationId", new RotationMultiUserOptions() {
                 Secret = apiuser.Attach(dbInstance),

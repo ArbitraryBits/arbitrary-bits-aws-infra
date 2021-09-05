@@ -28,8 +28,8 @@ namespace ArbitraryBitsAwsInfra
             var dbBastionHost = new ArbitraryBitsDbBastionHost(app, "DbBastionHostStack", dbBastionHostVpc.BastionHostVpc, new StackProps { Env = env });
             dbBastionHost.Node.AddDependency(db);
             
-            var iRacingCalendarDbSecrets = new IRacingCalendarDbSecrets(app, "IRacingCalendarDbSecretsStack", db.DbInstance, new StackProps { Env = env });
-            iRacingCalendarDbSecrets.Node.AddDependency(db);
+            // var iRacingCalendarDbSecrets = new IRacingCalendarDbSecrets(app, "IRacingCalendarDbSecretsStack", db.DbInstance, dbVpc.Vpc, new StackProps { Env = env });
+            // iRacingCalendarDbSecrets.Node.AddDependency(db);
 
             app.Synth();
         }

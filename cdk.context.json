@@ -4,7 +4,7 @@
     "us-east-1b"
   ],
   "vpc-provider:account=437377620726:filter.tag:Type=AB-DB-VPC:region=us-east-1:returnAsymmetricSubnets=true": {
-    "vpcId": "vpc-0bd2a8b0344ae9a56",
+    "vpcId": "vpc-053af4f680db3a9fb",
     "vpcCidrBlock": "10.0.0.0/16",
     "availabilityZones": [],
     "subnetGroups": [
@@ -13,23 +13,19 @@
         "type": "Isolated",
         "subnets": [
           {
-            "subnetId": "subnet-0e56140ae3fd98d0d",
+            "subnetId": "subnet-0f6f897ce059ce2f2",
             "cidr": "10.0.0.0/24",
             "availabilityZone": "us-east-1a",
-            "routeTableId": "rtb-074efef78a7ee04bb"
+            "routeTableId": "rtb-0ffddfd044f4f3dab"
           },
           {
-            "subnetId": "subnet-07680c236a1a10b94",
+            "subnetId": "subnet-00322a08eaa644363",
             "cidr": "10.0.1.0/24",
             "availabilityZone": "us-east-1b",
-            "routeTableId": "rtb-0ca91dc41da1a5976"
+            "routeTableId": "rtb-0255fbc4dc26052d9"
           }
         ]
       }
     ]
-  },
-  "security-group:account=437377620726:region=us-east-1:securityGroupId=sg-0f38438ceb84ac080": {
-    "securityGroupId": "sg-0f38438ceb84ac080",
-    "allowAllOutbound": false
   }
 }

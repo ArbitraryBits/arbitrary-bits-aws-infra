@@ -23,6 +23,15 @@ namespace ArbitraryBitsAwsInfra
             });
 
             Amazon.CDK.Tags.Of(Vpc).Add("Type", "AB-DB-VPC");
+
+            new InterfaceVpcEndpoint(this, "ArbitraryBitsDatabaseVpcSecretManagerEndpointId", new InterfaceVpcEndpointProps() {
+                Vpc = Vpc,
+                Service = new InterfaceVpcEndpointService("com.amazonaws.us-east-1.secretsmanager"),
+                PrivateDnsEnabled = true,
+                Subnets = new SubnetSelection() {
+                    SubnetType = SubnetType.ISOLATED   
+                }
+            });
             
             var cfn = new CfnOutput(this, "VpcIdOutput", new CfnOutputProps {
                 ExportName = "ArbitraryBitsDatabaseVpcId",
