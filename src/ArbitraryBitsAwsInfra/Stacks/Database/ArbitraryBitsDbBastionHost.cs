@@ -74,7 +74,7 @@ namespace ArbitraryBitsAwsInfra
 
             var sshCommand = String.Format("ssh -i ~/.ssh/{0}.pem -L 5432:{1}:5432 ec2-user@{2}", 
                     context["dbBastionHostKey"] as string,
-                    Fn.ImportValue("DbInstanceEndpointAddressOutput"), 
+                    Fn.ImportValue("DbInstanceEndpointAddress"), 
                     instance.InstancePublicDnsName);
 
             new CfnOutput(this, "DbInstanceSshCommandOutputId", new CfnOutputProps

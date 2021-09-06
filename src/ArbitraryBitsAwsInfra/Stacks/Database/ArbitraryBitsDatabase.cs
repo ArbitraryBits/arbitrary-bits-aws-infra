@@ -83,7 +83,7 @@ namespace ArbitraryBitsAwsInfra
             {
                 Value = DbInstance.DbInstanceEndpointAddress,
                 Description = "DB Instance endpoint adress",
-                ExportName = "DbInstanceEndpointAddressOutput"
+                ExportName = "DbInstanceEndpointAddress"
             });
 
             new CfnOutput(this, "DbInstanceIdentifierOutputId", new CfnOutputProps
