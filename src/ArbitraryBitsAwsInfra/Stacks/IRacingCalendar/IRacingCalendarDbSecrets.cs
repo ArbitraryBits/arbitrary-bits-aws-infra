@@ -9,7 +9,7 @@ namespace ArbitraryBitsAwsInfra
 {
     public class IRacingCalendarDbSecrets : Stack
     {
-        internal IRacingCalendarDbSecrets(Construct scope, string id, DatabaseInstance dbInstance, Vpc dbVpc, IStackProps props = null) : base(scope, id, props)
+        internal IRacingCalendarDbSecrets(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
         {
             var context = this.Node.TryGetContext("settings") as Dictionary<String, Object>;
 
@@ -19,22 +19,53 @@ namespace ArbitraryBitsAwsInfra
                 SecretName = "ArbitrraryBitsDatabaseApiuserdevSecret"
             });
 
-            // apiuser.Attach(dbInstance);
+            var dbSecurityGroup = SecurityGroup.FromLookup(
+                this, 
+                "ArbitraryBitsBastionHostDatabaseSecurityGroupId", 
+                context["dbInstanceSecurityGroupId"] as String
+            );
 
-            // apiuser.AddRotationSchedule("", new RotationScheduleOptions() {
-            //     AutomaticallyAfter = Duration.Days(1),
-            //     HostedRotation = HostedRotation.PostgreSqlSingleUser(new SingleUserHostedRotationOptions() {
-            //         FunctionName = "RotateApiuserdev",
-            //         Vpc = dbVpc,
-            //         VpcSubnets = new SubnetSelection() {
-            //             SubnetType = SubnetType.ISOLATED   
-            //         }
-            //     })
-            // });
-            
-            dbInstance.AddRotationMultiUser("ArbitrraryBitsDatabaseApiuserdevSecretRotationId", new RotationMultiUserOptions() {
-                Secret = apiuser.Attach(dbInstance),
-                AutomaticallyAfter = Duration.Days(1)
+            var dbInstance = DatabaseInstance.FromDatabaseInstanceAttributes(this, "ImportedArbitraryBitsDatabaseInstanceId", new DatabaseInstanceAttributes() 
+            {
+                InstanceEndpointAddress = Fn.ImportValue("DbInstanceEndpointAddress"),
+                InstanceIdentifier = Fn.ImportValue("DbInstanceIdentifier"),
+                SecurityGroups = new [] { dbSecurityGroup }
+            });
+
+            var dbVpc = Vpc.FromLookup(this, "ImportedArbitraryBitsDatabaseId", new VpcLookupOptions() 
+            {
+                VpcId = context["dbInstanceVpcId"] as string
+            });
+
+            apiuser.Attach(dbInstance);
+
+            var lambdaSg = new SecurityGroup(this, "DbBastionHostSecurityGroupId", new SecurityGroupProps 
+            {
+                Vpc = dbVpc,
+                SecurityGroupName = "RotateApiuserdevSecurityGroup",
+                AllowAllOutbound = true
+            });
+
+            dbSecurityGroup.Connections.AllowFrom(lambdaSg, new Port(new PortProps() 
+            { 
+                StringRepresentation = "5432",
+                Protocol = Protocol.TCP, 
+                FromPort = 5432,
+                ToPort = 5432,
+            }), "Allow connections from Lambda rotation apiuserdev to DB");
+
+            apiuser.AddRotationSchedule("ApiuserdevRotationScheduleId", new RotationScheduleOptions() 
+            {
+                AutomaticallyAfter = Duration.Days(1),
+                HostedRotation = HostedRotation.PostgreSqlSingleUser(new SingleUserHostedRotationOptions() 
+                {
+                    FunctionName = "RotateApiuserdev",
+                    Vpc = dbVpc,
+                    SecurityGroups = new [] { dbSecurityGroup },
+                    VpcSubnets = new SubnetSelection() {
+                        SubnetType = SubnetType.ISOLATED   
+                    }
+                })
             });
             
             Amazon.CDK.Tags.Of(apiuser).Add("App", "iRacingCalendar");
