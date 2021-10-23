@@ -60,6 +60,26 @@
             "runOptions": {
                 "instanceLimit": 1
             }
+        },
+        {
+            "label": "Deploy ToDo secrets",
+            "command": "cdk deploy ToDoDbSecretsStack --require-approval never",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
+        },
+        {
+            "label": "Destroy ToDo secrets",
+            "command": "cdk destroy ToDoDbSecretsStack --force",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
         }
     ]
 }

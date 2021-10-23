@@ -31,6 +31,9 @@ namespace ArbitraryBitsAwsInfra
             var iRacingCalendarDbSecrets = new IRacingCalendarDbSecrets(app, "IRacingCalendarDbSecretsStack", new StackProps { Env = env });
             iRacingCalendarDbSecrets.Node.AddDependency(db);
 
+            var toDoDbSecrets = new ToDoDbSecrets(app, "ToDoDbSecretsStack", new StackProps { Env = env });
+            toDoDbSecrets.Node.AddDependency(db);
+
             app.Synth();
         }
     }
