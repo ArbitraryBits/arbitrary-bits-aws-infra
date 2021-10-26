@@ -12,13 +12,7 @@ namespace ArbitraryBitsAwsInfra
         internal ToDoDbSecrets(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
         {
             var context = this.Node.TryGetContext("settings") as Dictionary<String, Object>;
-
-            var userDev = new DatabaseSecret(this, "ArbitrraryBitsDatabaseTodouserdevSecretId", new DatabaseSecretProps() 
-            {
-                Username = "todouserdev",
-                SecretName = "ArbitrraryBitsDatabaseTodouserdevSecret"
-            });
-
+            
             var dbSecurityGroup = SecurityGroup.FromLookup(
                 this, 
                 "ArbitraryBitsBastionHostDatabaseSecurityGroupId", 
@@ -37,8 +31,6 @@ namespace ArbitraryBitsAwsInfra
                 VpcId = context["dbInstanceVpcId"] as string
             });
 
-            userDev.Attach(dbInstance);
-
             var lambdaSg = new SecurityGroup(this, "RotateTodouserdevSecurityGroupId", new SecurityGroupProps 
             {
                 Vpc = dbVpc,
@@ -52,22 +44,23 @@ namespace ArbitraryBitsAwsInfra
                 Protocol = Protocol.TCP, 
                 FromPort = 5432,
                 ToPort = 5432,
-            }), "Allow connections from Lambda rotation todouserdev to DB");
+            }), "Allow connections from Lambda rotation for todo users to DB");
 
-            userDev.AddRotationSchedule("TodouserdevRotationScheduleId", new RotationScheduleOptions() 
+            var userProd = new DatabaseSecret(this, "ArbitrraryBitsDatabaseTodouserprodSecretId", new DatabaseSecretProps() 
             {
-                AutomaticallyAfter = Duration.Days(1),
-                HostedRotation = HostedRotation.PostgreSqlSingleUser(new SingleUserHostedRotationOptions() 
-                {
-                    FunctionName = "RotateTodouserdev",
-                    Vpc = dbVpc,
-                    SecurityGroups = new [] { lambdaSg },
-                    VpcSubnets = new SubnetSelection() {
-                        SubnetType = SubnetType.ISOLATED   
-                    }
-                })
+                Username = "todouserprod",
+                SecretName = "ArbitrraryBitsDatabaseTodouserprodSecret"
             });
-            
+            userProd.Attach(dbInstance);
+            Amazon.CDK.Tags.Of(userProd).Add("App", "ToDo");
+            Amazon.CDK.Tags.Of(userProd).Add("AppEnv", "prod");
+
+            var userDev = new DatabaseSecret(this, "ArbitrraryBitsDatabaseTodouserdevSecretId", new DatabaseSecretProps() 
+            {
+                Username = "todouserdev",
+                SecretName = "ArbitrraryBitsDatabaseTodouserdevSecret"
+            });
+            userDev.Attach(dbInstance);
             Amazon.CDK.Tags.Of(userDev).Add("App", "ToDo");
             Amazon.CDK.Tags.Of(userDev).Add("AppEnv", "dev");
         }
