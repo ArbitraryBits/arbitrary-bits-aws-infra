@@ -61,7 +61,7 @@ namespace ArbitraryBitsAwsInfra
                 {
                     FunctionName = "RotateApiuserdev",
                     Vpc = dbVpc,
-                    SecurityGroups = new [] { dbSecurityGroup },
+                    SecurityGroups = new [] { lambdaSg },
                     VpcSubnets = new SubnetSelection() {
                         SubnetType = SubnetType.ISOLATED   
                     }
