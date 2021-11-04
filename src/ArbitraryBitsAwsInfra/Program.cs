@@ -34,6 +34,9 @@ namespace ArbitraryBitsAwsInfra
             var toDoDbSecrets = new ToDoDbSecrets(app, "ToDoDbSecretsStack", new StackProps { Env = env });
             toDoDbSecrets.Node.AddDependency(db);
 
+            var ecsPeerConnection = new ToDoEcsServicePeerConnection(app, "EcsPeerStack", new StackProps { Env = env });
+            ecsPeerConnection.Node.AddDependency(db);
+
             app.Synth();
         }
     }

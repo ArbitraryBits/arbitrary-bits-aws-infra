@@ -80,6 +80,26 @@
             "runOptions": {
                 "instanceLimit": 1
             }
+        },
+        {
+            "label": "Deploy ToDo Ecs peering",
+            "command": "cdk context --clear && cdk deploy EcsPeerStack --require-approval never",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
+        },
+        {
+            "label": "Destroy ToDo Ecs peering",
+            "command": "cdk context --clear && cdk destroy EcsPeerStack --force",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
         }
     ]
 }
