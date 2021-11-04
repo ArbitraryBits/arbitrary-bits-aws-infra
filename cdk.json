@@ -3,11 +3,11 @@
   "versionReporting": false,
   "context": {
     "settings": {
-      "allowIp": "46.242.9.205/32",
+      "allowIp": "46.242.11.2/32",
       "dbBastionHostKey": "aws-us-east-1",
       "mainAvailabilityZone": "us-east-1a",
-      "dbInstanceSecurityGroupId": "sg-0ad5a2f4b67c6ad84",
-      "dbInstanceVpcId": "vpc-06881ce758953ba7e"
+      "dbInstanceSecurityGroupId": "sg-0da567f5d1ecf58af",
+      "dbInstanceVpcId": "vpc-09ba9db4305794f0b"
     },
     "dev": {
       "account": "437377620726",
