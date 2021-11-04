@@ -6,13 +6,17 @@
       "allowIp": "46.242.11.2/32",
       "dbBastionHostKey": "aws-us-east-1",
       "mainAvailabilityZone": "us-east-1a",
-      "dbInstanceSecurityGroupId": "sg-0da567f5d1ecf58af",
-      "dbInstanceVpcId": "vpc-09ba9db4305794f0b"
+      "dbInstanceSecurityGroupId": "sg-08cffc055d5d0042a",
+      "dbInstanceVpcId": "vpc-08c9f203964885378"
     },
     "dev": {
       "account": "437377620726",
       "region": "us-east-1"
     },
+    "availability-zones:account=437377620726:region=us-east-1": [
+      "us-east-1a",
+      "us-east-1b"
+    ],
     "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": true,
     "@aws-cdk/core:enableStackNameDuplicates": "true",
     "aws-cdk:enableDiffNoFail": "true",
