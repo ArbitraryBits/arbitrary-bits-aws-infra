@@ -46,23 +46,23 @@ namespace ArbitraryBitsAwsInfra
                 }
             }
 
-            // var dbSecurityGroup = SecurityGroup.FromLookup(
-            //     this, 
-            //     "ArbitraryBitsBastionHostDatabaseSecurityGroupId", 
-            //     context["dbInstanceSecurityGroupId"] as String);
+            var dbSecurityGroup = SecurityGroup.FromLookup(
+                this, 
+                "ArbitraryBitsDatabaseSecurityGroupId", 
+                context["dbInstanceSecurityGroupId"] as String);
 
-            // var ecsInstanceSecurityGroup = SecurityGroup.FromLookup(
-            //     this, 
-            //     "EcsInstanceDatabaseSecurityGroupId", 
-            //     context["ecsInstanceSecurityGroupId"] as String);
+            var ecsInstanceSecurityGroup = SecurityGroup.FromLookup(
+                this, 
+                "EcsInstanceSecurityGroupId", 
+                context["ecsInstanceSecurityGroupId"] as String);
 
-            // dbSecurityGroup.Connections.AllowFrom(ecsInstanceSecurityGroup, new Port(new PortProps() 
-            // { 
-            //     StringRepresentation = "5432",
-            //     Protocol = Protocol.TCP, 
-            //     FromPort = 5432,
-            //     ToPort = 5432,
-            // }), "Allow connections from Ecs Instance to DB");
+            dbSecurityGroup.Connections.AllowFrom(ecsInstanceSecurityGroup, new Port(new PortProps() 
+            { 
+                StringRepresentation = "5432",
+                Protocol = Protocol.TCP, 
+                FromPort = 5432,
+                ToPort = 5432,
+            }), "Allow connections from ECS Instance to DB");
         }
     }
 }
