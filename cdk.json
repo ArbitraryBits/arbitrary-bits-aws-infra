@@ -6,8 +6,8 @@
       "allowIp": "46.242.11.2/32",
       "dbBastionHostKey": "aws-us-east-1",
       "mainAvailabilityZone": "us-east-1a",
-      "dbInstanceSecurityGroupId": "sg-0c533f7ce8290e267",
-      "dbInstanceVpcId": "vpc-082ed8e87562203b2",
+      "dbInstanceSecurityGroupId": "sg-0e86489370fcbf87a",
+      "dbInstanceVpcId": "vpc-040f799d4a2b98cc8",
       "ecsInstanceSecurityGroupId": "sg-0b199e477107770b4"
     },
     "dev": {

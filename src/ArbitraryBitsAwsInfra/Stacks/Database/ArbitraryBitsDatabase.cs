@@ -50,10 +50,10 @@ namespace ArbitraryBitsAwsInfra
                 PerformanceInsightRetention = PerformanceInsightRetention.DEFAULT,
                 EnablePerformanceInsights = true,
                 InstanceType = InstanceType.Of(InstanceClass.BURSTABLE3, InstanceSize.SMALL),
-                DeletionProtection = false,
-                DeleteAutomatedBackups = true,
+                DeletionProtection = true,
+                DeleteAutomatedBackups = false,
                 BackupRetention = Duration.Days(7),
-                RemovalPolicy = RemovalPolicy.DESTROY,
+                RemovalPolicy = RemovalPolicy.SNAPSHOT,
                 Vpc = vpc,
                 SecurityGroups = new ISecurityGroup[] { sg },
                 AvailabilityZone = context["mainAvailabilityZone"] as String,
@@ -73,7 +73,7 @@ namespace ArbitraryBitsAwsInfra
             
             DbInstance.AddRotationSingleUser(new RotationSingleUserOptions() 
             {
-                AutomaticallyAfter = Duration.Days(1)
+                AutomaticallyAfter = Duration.Days(30)
             });
 
             Amazon.CDK.Tags.Of(sg).Add("Type", "AB-DB-RDS");
