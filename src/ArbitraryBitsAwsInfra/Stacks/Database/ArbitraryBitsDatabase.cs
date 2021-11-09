@@ -50,7 +50,7 @@ namespace ArbitraryBitsAwsInfra
                 PerformanceInsightRetention = PerformanceInsightRetention.DEFAULT,
                 EnablePerformanceInsights = true,
                 InstanceType = InstanceType.Of(InstanceClass.BURSTABLE3, InstanceSize.SMALL),
-                DeletionProtection = true,
+                DeletionProtection = false,
                 DeleteAutomatedBackups = false,
                 BackupRetention = Duration.Days(7),
                 RemovalPolicy = RemovalPolicy.SNAPSHOT,
