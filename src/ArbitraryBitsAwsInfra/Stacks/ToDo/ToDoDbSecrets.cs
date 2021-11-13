@@ -26,26 +26,6 @@ namespace ArbitraryBitsAwsInfra
                 SecurityGroups = new [] { dbSecurityGroup }
             });
 
-            var dbVpc = Vpc.FromLookup(this, "ImportedArbitraryBitsDatabaseId", new VpcLookupOptions() 
-            {
-                VpcId = context["dbInstanceVpcId"] as string
-            });
-
-            var lambdaSg = new SecurityGroup(this, "RotateTodouserdevSecurityGroupId", new SecurityGroupProps 
-            {
-                Vpc = dbVpc,
-                SecurityGroupName = "RotateTodouserdevSecurityGroup",
-                AllowAllOutbound = true
-            });
-
-            dbSecurityGroup.Connections.AllowFrom(lambdaSg, new Port(new PortProps() 
-            { 
-                StringRepresentation = "5432",
-                Protocol = Protocol.TCP, 
-                FromPort = 5432,
-                ToPort = 5432,
-            }), "Allow connections from Lambda rotation for todo users to DB");
-
             var userProd = new DatabaseSecret(this, "ArbitrraryBitsDatabaseTodouserprodSecretId", new DatabaseSecretProps() 
             {
                 Username = "todouserprod",
@@ -61,6 +41,7 @@ namespace ArbitraryBitsAwsInfra
                 SecretName = "ArbitrraryBitsDatabaseTodouserdevSecret"
             });
             userDev.Attach(dbInstance);
+
             Amazon.CDK.Tags.Of(userDev).Add("App", "ToDo");
             Amazon.CDK.Tags.Of(userDev).Add("AppEnv", "dev");
         }

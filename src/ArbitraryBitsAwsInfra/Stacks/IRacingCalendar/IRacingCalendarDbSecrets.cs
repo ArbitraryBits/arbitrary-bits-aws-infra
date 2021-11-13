@@ -32,9 +32,8 @@ namespace ArbitraryBitsAwsInfra
                 SecurityGroups = new [] { dbSecurityGroup }
             });
 
-            var dbVpc = Vpc.FromLookup(this, "ImportedArbitraryBitsDatabaseId", new VpcLookupOptions() 
-            {
-                VpcId = context["dbInstanceVpcId"] as string
+            var dbVpc = Vpc.FromLookup(this, "ImportedArbitraryBitsDatabaseId", new VpcLookupOptions() {
+                Tags = new Dictionary<string, string>() { { "Type", "AB-DB-VPC" } }
             });
 
             apiuser.Attach(dbInstance);
