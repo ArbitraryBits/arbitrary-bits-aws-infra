@@ -26,16 +26,15 @@ namespace ArbitraryBitsAwsInfra
             
             // routes
             var routeIndex = 1;
-            foreach (var ecsSubnet in ecsVpc.PublicSubnets)
+            foreach(var dbSubnet in dbVpc.IsolatedSubnets)
             {
-                foreach(var dbSubnet in dbVpc.IsolatedSubnets) 
-                {
-                    new CfnRoute(this, string.Format("EcsToDBRoute-{0}", routeIndex), new CfnRouteProps() {
+                new CfnRoute(this, string.Format("EcsToDBRoute-{0}", routeIndex), new CfnRouteProps() {
                         DestinationCidrBlock = dbSubnet.Ipv4CidrBlock,
                         VpcPeeringConnectionId = peeringConnection.Ref,
-                        RouteTableId = ecsSubnet.RouteTable.RouteTableId
+                        RouteTableId = context["ecsRouteTableId"] as String
                     });
-
+                foreach (var ecsSubnet in ecsVpc.PublicSubnets)
+                {
                     new CfnRoute(this, string.Format("DBToEcsRoute-{0}", routeIndex), new CfnRouteProps() {
                         DestinationCidrBlock = ecsSubnet.Ipv4CidrBlock,
                         VpcPeeringConnectionId = peeringConnection.Ref,

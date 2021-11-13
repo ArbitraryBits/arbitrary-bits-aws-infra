@@ -53,7 +53,7 @@
         },
         {
             "label": "Destroy iRacing secrets",
-            "command": "cdk context --clear && cdk destroy IRacingCalendarDbSecretsStack --force",
+            "command": "cdk context --clear && cdk destroy IRacingCalendarDbSecretsStack",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
@@ -73,7 +73,7 @@
         },
         {
             "label": "Destroy ToDo secrets",
-            "command": "cdk context --clear && cdk destroy ToDoDbSecretsStack --force",
+            "command": "cdk context --clear && cdk destroy ToDoDbSecretsStack",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
@@ -93,7 +93,7 @@
         },
         {
             "label": "Destroy ToDo Ecs peering",
-            "command": "cdk context --clear && cdk destroy EcsPeerStack --force",
+            "command": "cdk context --clear && cdk destroy EcsPeerStack",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
