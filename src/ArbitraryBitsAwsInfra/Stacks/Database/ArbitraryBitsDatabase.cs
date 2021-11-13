@@ -28,6 +28,7 @@ namespace ArbitraryBitsAwsInfra
             
             DbInstance = new DatabaseInstance(this, "ArbitrraryBitsDatabaseId", new DatabaseInstanceProps() 
             {
+                StorageEncrypted = true,
                 InstanceIdentifier = "ArbitrraryBitsDatabase",
                 Credentials = Credentials.FromSecret(adminuser),
                 Engine = DatabaseInstanceEngine.Postgres(new PostgresInstanceEngineProps() 
