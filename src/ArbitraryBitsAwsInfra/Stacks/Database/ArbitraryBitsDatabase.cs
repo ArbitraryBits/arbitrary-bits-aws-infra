@@ -89,7 +89,7 @@ namespace ArbitraryBitsAwsInfra
 
             var rotation = adminuser.AddRotationSchedule("AdminuserRotationScheduleId", new RotationScheduleOptions() 
             {
-                AutomaticallyAfter = Duration.Days(1),
+                AutomaticallyAfter = Duration.Days(30),
                 HostedRotation = HostedRotation.PostgreSqlSingleUser(new SingleUserHostedRotationOptions() 
                 {
                     FunctionName = "RotateAdminuser",
