@@ -87,21 +87,6 @@ namespace ArbitraryBitsAwsInfra
                 ToPort = 5432,
             }), "Allow connections from Lambda rotation adminuser to DB");
 
-            var rotation = adminuser.AddRotationSchedule("AdminuserRotationScheduleId", new RotationScheduleOptions() 
-            {
-                AutomaticallyAfter = Duration.Days(30),
-                HostedRotation = HostedRotation.PostgreSqlSingleUser(new SingleUserHostedRotationOptions() 
-                {
-                    FunctionName = "RotateAdminuser",
-                    Vpc = vpc,
-                    SecurityGroups = new [] { lambdaSg },
-                    VpcSubnets = new SubnetSelection() {
-                        SubnetType = SubnetType.ISOLATED   
-                    }
-                })
-            });
-            rotation.Node.AddDependency(DbInstance);
-
             Amazon.CDK.Tags.Of(sg).Add("Type", "AB-DB-RDS");
             Amazon.CDK.Tags.Of(DbInstance).Add("Type", "AB-DB-RDS");
             
