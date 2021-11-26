@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Amazon.CDK;
 using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.RDS;
-using Amazon.CDK.AWS.SecretsManager;
+using Amazon.CDK.AWS.Route53;
 
 namespace ArbitraryBitsAwsInfra
 {
@@ -89,6 +89,19 @@ namespace ArbitraryBitsAwsInfra
 
             Amazon.CDK.Tags.Of(sg).Add("Type", "AB-DB-RDS");
             Amazon.CDK.Tags.Of(DbInstance).Add("Type", "AB-DB-RDS");
+
+            var hostedZone = new PrivateHostedZone(this, "ArbitraryBitsPrivateHostedZoneId", new PrivateHostedZoneProps() {
+                Vpc = Vpc.FromLookup(this, "ImportedEcsVpcId", new VpcLookupOptions() {
+                    Tags = new Dictionary<string, string>() { { "Type", "ECS-VPC" } }
+                }),
+                ZoneName = "arbitrarybits.com"
+            });
+
+            new CnameRecord(this, "ArbitraryBitsPrivateHostedZoneDbCnameRecordId", new CnameRecordProps() {
+                Zone = hostedZone,
+                RecordName = "db.arbitrarybits.com",
+                DomainName = DbInstance.DbInstanceEndpointAddress
+            });
             
             new CfnOutput(this, "DbInstanceEndpointAddressOutputId", new CfnOutputProps
             {

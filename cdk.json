@@ -8,7 +8,8 @@
       "mainAvailabilityZone": "us-east-1a",
       "dbInstanceSecurityGroupId": "sg-00eff5c07daf0ca86",
       "ecsInstanceSecurityGroupId": "sg-0b199e477107770b4",
-      "ecsRouteTableId": "rtb-49b37030"
+      "ecsRouteTableId": "rtb-49b37030",
+      "ecsVpcId": "vpc-b978fadf"
     },
     "dev": {
       "account": "437377620726",
