@@ -9,7 +9,8 @@
       "dbInstanceSecurityGroupId": "sg-00eff5c07daf0ca86",
       "ecsInstanceSecurityGroupId": "sg-0b199e477107770b4",
       "ecsRouteTableId": "rtb-49b37030",
-      "ecsVpcId": "vpc-b978fadf"
+      "ecsVpcId": "vpc-b978fadf",
+      "dbSnapshotName": "rds:arbitrrarybitsdatabase-2021-11-27-02-13"
     },
     "dev": {
       "account": "437377620726",

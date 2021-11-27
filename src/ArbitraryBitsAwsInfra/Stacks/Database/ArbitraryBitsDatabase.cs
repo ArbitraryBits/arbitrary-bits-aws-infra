@@ -14,17 +14,26 @@ namespace ArbitraryBitsAwsInfra
         {
             var context = this.Node.TryGetContext("settings") as Dictionary<String, Object>;
 
-            var sg = new SecurityGroup(this, "ArbitraryBitsDatabaseSecurityGroupId", new SecurityGroupProps 
-            {
-                Vpc = vpc,
-                SecurityGroupName = "ArbitrraryBitsDatabaseSecurityGroup"
-            });
+            // var sg = new SecurityGroup(this, "ArbitraryBitsDatabaseSecurityGroupId", new SecurityGroupProps 
+            // {
+            //     Vpc = vpc,
+            //     SecurityGroupName = "ArbitrraryBitsDatabaseSecurityGroup"
+            // });
+            var sg = SecurityGroup.FromLookup(
+                this, 
+                "ArbitraryBitsBastionHostDatabaseSecurityGroupId", 
+                context["dbInstanceSecurityGroupId"] as String);
 
-            var adminuser = new DatabaseSecret(this, "ArbitrraryBitsDatabaseAdminuserSecretId", new DatabaseSecretProps() 
-            {
-                Username = "adminuser",
-                SecretName = "ArbitrraryBitsDatabaseAdminuserSecret"
-            });
+            // var adminuser = new DatabaseSecret(this, "ArbitrraryBitsDatabaseAdminuserSecretId", new DatabaseSecretProps() 
+            // {
+            //     Username = "adminuser",
+            //     SecretName = "ArbitrraryBitsDatabaseAdminuserSecret"
+            // });
+
+            var adminuser = DatabaseSecret.FromSecretNameV2(
+                this, 
+                "ArbitrraryBitsDatabaseAdminuserSecretId", 
+                "ArbitrraryBitsDatabaseAdminuserSecret");
             
             DbInstance = new DatabaseInstance(this, "ArbitrraryBitsDatabaseId", new DatabaseInstanceProps() 
             {
@@ -59,27 +68,23 @@ namespace ArbitraryBitsAwsInfra
                 SecurityGroups = new ISecurityGroup[] { sg },
                 AvailabilityZone = context["mainAvailabilityZone"] as String,
                 ParameterGroup = ParameterGroup.FromParameterGroupName(this, "DbParameterGroup", "default.postgres13"),
-                SubnetGroup = new SubnetGroup(this, "ArbitrraryBitsDatabaseSubnetGroupId", new SubnetGroupProps() 
-                {
-                    Description = "Subnet group for DB",
-                    Vpc = vpc,
-                    RemovalPolicy = RemovalPolicy.DESTROY,
-                    SubnetGroupName = "ArbitrraryBitsDatabaseSubnetGroup",
-                    VpcSubnets = new SubnetSelection() 
-                    {
-                        SubnetType = SubnetType.ISOLATED
-                    }
-                })
+                SubnetGroup = SubnetGroup.FromSubnetGroupName(this, "ArbitrraryBitsDatabaseSubnetGroupId", "ArbitrraryBitsDatabaseSubnetGroup")
             });
 
-            Amazon.CDK.Tags.Of(sg).Add("Type", "AB-DB-RDS");
             Amazon.CDK.Tags.Of(DbInstance).Add("Type", "AB-DB-RDS");
 
-            var hostedZone = new PrivateHostedZone(this, "ArbitraryBitsPrivateHostedZoneId", new PrivateHostedZoneProps() {
-                Vpc = Vpc.FromLookup(this, "ImportedEcsVpcId", new VpcLookupOptions() {
+            // var hostedZone = new PrivateHostedZone(this, "ArbitraryBitsPrivateHostedZoneId", new PrivateHostedZoneProps() {
+            //     Vpc = Vpc.FromLookup(this, "ImportedEcsVpcId", new VpcLookupOptions() {
+            //         Tags = new Dictionary<string, string>() { { "Type", "ECS-VPC" } }
+            //     }),
+            //     ZoneName = "arbitrarybits.com"
+            // });
+            var hostedZone = PrivateHostedZone.FromLookup(this, "ArbitraryBitsPrivateHostedZoneId", new HostedZoneProviderProps() {
+                DomainName = "arbitrarybits.com",
+                PrivateZone = true,
+                VpcId = Vpc.FromLookup(this, "ImportedEcsVpcId", new VpcLookupOptions() {
                     Tags = new Dictionary<string, string>() { { "Type", "ECS-VPC" } }
-                }),
-                ZoneName = "arbitrarybits.com"
+                }).VpcId
             });
 
             new CnameRecord(this, "ArbitraryBitsPrivateHostedZoneDbCnameRecordId", new CnameRecordProps() {
@@ -100,13 +105,6 @@ namespace ArbitraryBitsAwsInfra
                 Value = DbInstance.InstanceIdentifier,
                 Description = "DB Instance identifier",
                 ExportName = "DbInstanceIdentifier"
-            });
-
-            new CfnOutput(this, "DbInstanceSecurityGroupOutputId", new CfnOutputProps
-            {
-                Value = sg.SecurityGroupId,
-                Description = "DB Instance security group id",
-                ExportName = "DbInstanceSecurityGroupId"
             });
         }
     }
