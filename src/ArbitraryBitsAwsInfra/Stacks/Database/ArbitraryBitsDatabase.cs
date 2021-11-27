@@ -72,21 +72,6 @@ namespace ArbitraryBitsAwsInfra
                 })
             });
 
-            var lambdaSg = new SecurityGroup(this, "DBAdminuserSecurityGroupId", new SecurityGroupProps 
-            {
-                Vpc = vpc,
-                SecurityGroupName = "RotateAdminuserSecurityGroup",
-                AllowAllOutbound = true
-            });
-
-            sg.Connections.AllowFrom(lambdaSg, new Port(new PortProps() 
-            { 
-                StringRepresentation = "5432",
-                Protocol = Protocol.TCP, 
-                FromPort = 5432,
-                ToPort = 5432,
-            }), "Allow connections from Lambda rotation adminuser to DB");
-
             Amazon.CDK.Tags.Of(sg).Add("Type", "AB-DB-RDS");
             Amazon.CDK.Tags.Of(DbInstance).Add("Type", "AB-DB-RDS");
 
