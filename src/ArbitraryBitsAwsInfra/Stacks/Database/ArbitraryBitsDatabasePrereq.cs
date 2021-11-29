@@ -18,13 +18,7 @@ namespace ArbitraryBitsAwsInfra
                 Vpc = vpc,
                 SecurityGroupName = "ArbitrraryBitsDatabaseSecurityGroup"
             });
-
-            var adminuser = new DatabaseSecret(this, "ArbitrraryBitsDatabaseAdminuserSecretId", new DatabaseSecretProps() 
-            {
-                Username = "adminuser",
-                SecretName = "ArbitrraryBitsDatabaseAdminuserSecret"
-            });
-
+            
             new SubnetGroup(this, "ArbitrraryBitsDatabaseSubnetGroupId", new SubnetGroupProps() 
                 {
                     Description = "Subnet group for DB",
