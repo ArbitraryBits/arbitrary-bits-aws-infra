@@ -3,14 +3,14 @@
   "versionReporting": false,
   "context": {
     "settings": {
-      "allowIp": "46.242.11.2/32",
+      "allowIp": "90.154.71.105/32",
       "dbBastionHostKey": "aws-us-east-1",
       "mainAvailabilityZone": "us-east-1a",
-      "dbInstanceSecurityGroupId": "sg-006f28cc64b42b91f",
+      "dbInstanceSecurityGroupId": "sg-09e60d34ba6d4a065",
       "ecsInstanceSecurityGroupId": "sg-0b199e477107770b4",
       "ecsRouteTableId": "rtb-49b37030",
       "ecsVpcId": "vpc-b978fadf",
-      "dbSnapshotName": "dbstack-snapshot-arbitrrarybitsdatabaseida8f31981-7jasgaz3vzva"
+      "dbSnapshotName": "arn:aws:rds:us-east-1:437377620726:snapshot:rds:arbitrrarybitsdatabase-2021-12-25-02-13"
     },
     "dev": {
       "account": "437377620726",
