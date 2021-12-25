@@ -2,8 +2,28 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Deploy DB Prereq",
+            "command": "cdk context --clear && cdk deploy DbVpcStack DbPrereqStack --require-approval never",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
+        },
+        {
+            "label": "Destroy DB Prereq",
+            "command": "cdk context --clear && cdk destroy DbVpcStack DbPrereqStack",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
+        },
+        {
             "label": "Deploy DB",
-            "command": "cdk context --clear && cdk deploy DbVpcStack DbStack --require-approval never",
+            "command": "cdk context --clear && cdk deploy DbVpcStack DbPrereqStack DbStack --require-approval never",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
@@ -13,7 +33,7 @@
         },
         {
             "label": "Destroy DB",
-            "command": "cdk context --clear && cdk destroy DbVpcStack DbStack",
+            "command": "cdk context --clear && cdk destroy DbVpcStack DbPrereqStack DbStack",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
