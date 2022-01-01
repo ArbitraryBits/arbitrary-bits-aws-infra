@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Kube / Deploy Cluster",
+            "command": "cdk context --clear && cdk deploy KubernetesStack",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
+        },
+        {
+            "label": "Kube / Destroy Cluster",
+            "command": "cdk context --clear && cdk destroy KubernetesStack",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            }
+        },
+    ]
+}
