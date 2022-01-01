@@ -1,0 +1,82 @@
+{
+  "vpc-provider:account=437377620726:filter.tag:Type=ECS-VPC:region=us-east-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-b978fadf",
+    "vpcCidrBlock": "172.31.0.0/16",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-b6d99c9b",
+            "cidr": "172.31.48.0/20",
+            "availabilityZone": "us-east-1a",
+            "routeTableId": "rtb-49b37030"
+          },
+          {
+            "subnetId": "subnet-4de2c804",
+            "cidr": "172.31.0.0/20",
+            "availabilityZone": "us-east-1b",
+            "routeTableId": "rtb-49b37030"
+          },
+          {
+            "subnetId": "subnet-d0dcaf8b",
+            "cidr": "172.31.16.0/20",
+            "availabilityZone": "us-east-1c",
+            "routeTableId": "rtb-49b37030"
+          },
+          {
+            "subnetId": "subnet-e71d6282",
+            "cidr": "172.31.64.0/20",
+            "availabilityZone": "us-east-1d",
+            "routeTableId": "rtb-49b37030"
+          },
+          {
+            "subnetId": "subnet-d8d157e4",
+            "cidr": "172.31.32.0/20",
+            "availabilityZone": "us-east-1e",
+            "routeTableId": "rtb-49b37030"
+          }
+        ]
+      }
+    ]
+  },
+  "security-group:account=437377620726:region=us-east-1:securityGroupId=sg-09e60d34ba6d4a065": {
+    "securityGroupId": "sg-09e60d34ba6d4a065",
+    "allowAllOutbound": false
+  },
+  "vpc-provider:account=437377620726:filter.tag:Type=AB-DB-VPC:region=us-east-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-09462bd3a6d6e66db",
+    "vpcCidrBlock": "10.0.0.0/16",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "isolated",
+        "type": "Isolated",
+        "subnets": [
+          {
+            "subnetId": "subnet-07d742b686c6d7477",
+            "cidr": "10.0.0.0/24",
+            "availabilityZone": "us-east-1a",
+            "routeTableId": "rtb-0fef8f688a18fcd62"
+          },
+          {
+            "subnetId": "subnet-0def10c91be597635",
+            "cidr": "10.0.1.0/24",
+            "availabilityZone": "us-east-1b",
+            "routeTableId": "rtb-0c7a596646ccb6c6d"
+          }
+        ]
+      }
+    ]
+  },
+  "security-group:account=437377620726:region=us-east-1:securityGroupId=sg-0b199e477107770b4": {
+    "securityGroupId": "sg-0b199e477107770b4",
+    "allowAllOutbound": true
+  },
+  "hosted-zone:account=437377620726:domainName=arbitrarybits.com:privateZone=true:region=us-east-1:vpcId=vpc-b978fadf": {
+    "Id": "/hostedzone/Z03099001MIXP150D9B9H",
+    "Name": "arbitrarybits.com."
+  }
+}

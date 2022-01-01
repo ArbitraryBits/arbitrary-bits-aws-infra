@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Deploy DB Prereq",
+            "label": "DB / Deploy DB Prereq",
             "command": "cdk context --clear && cdk deploy DbVpcStack DbPrereqStack --require-approval never",
             "type": "shell",
             "group": "build",
@@ -12,7 +12,7 @@
             }
         },
         {
-            "label": "Destroy DB Prereq",
+            "label": "DB / Destroy DB Prereq",
             "command": "cdk context --clear && cdk destroy DbVpcStack DbPrereqStack",
             "type": "shell",
             "group": "build",
@@ -22,7 +22,7 @@
             }
         },
         {
-            "label": "Deploy DB",
+            "label": "DB / Deploy DB",
             "command": "cdk context --clear && cdk deploy DbVpcStack DbPrereqStack DbStack --require-approval never",
             "type": "shell",
             "group": "build",
@@ -32,7 +32,7 @@
             }
         },
         {
-            "label": "Destroy DB",
+            "label": "DB / Destroy DB",
             "command": "cdk context --clear && cdk destroy DbVpcStack DbPrereqStack DbStack",
             "type": "shell",
             "group": "build",
@@ -42,7 +42,7 @@
             }
         },
         {
-            "label": "Deploy DB BastionHost",
+            "label": "DB / Deploy DB BastionHost",
             "command": "cdk context --clear && cdk deploy DbBastionHostVpcStack DbBastionHostStack --require-approval never",
             "type": "shell",
             "group": "build",
@@ -52,7 +52,7 @@
             }
         },
         {
-            "label": "Destroy DB BastionHost",
+            "label": "DB / Destroy DB BastionHost",
             "command": "cdk context --clear && cdk destroy DbBastionHostVpcStack DbBastionHostStack --force",
             "type": "shell",
             "group": "build",
@@ -62,7 +62,7 @@
             }
         },
         {
-            "label": "Deploy iRacing secrets",
+            "label": "DB / Deploy iRacing secrets",
             "command": "cdk context --clear && cdk deploy IRacingCalendarDbSecretsStack --require-approval never",
             "type": "shell",
             "group": "build",
@@ -72,7 +72,7 @@
             }
         },
         {
-            "label": "Destroy iRacing secrets",
+            "label": "DB / Destroy iRacing secrets",
             "command": "cdk context --clear && cdk destroy IRacingCalendarDbSecretsStack",
             "type": "shell",
             "group": "build",
@@ -82,7 +82,7 @@
             }
         },
         {
-            "label": "Deploy ToDo secrets",
+            "label": "DB / Deploy ToDo secrets",
             "command": "cdk context --clear && cdk deploy ToDoDbSecretsStack --require-approval never",
             "type": "shell",
             "group": "build",
@@ -92,7 +92,7 @@
             }
         },
         {
-            "label": "Destroy ToDo secrets",
+            "label": "DB / Destroy ToDo secrets",
             "command": "cdk context --clear && cdk destroy ToDoDbSecretsStack",
             "type": "shell",
             "group": "build",
@@ -102,7 +102,7 @@
             }
         },
         {
-            "label": "Deploy ToDo Ecs peering",
+            "label": "DB / Deploy ToDo Ecs peering",
             "command": "cdk context --clear && cdk deploy EcsPeerStack --require-approval never",
             "type": "shell",
             "group": "build",
@@ -112,7 +112,7 @@
             }
         },
         {
-            "label": "Destroy ToDo Ecs peering",
+            "label": "DB / Destroy ToDo Ecs peering",
             "command": "cdk context --clear && cdk destroy EcsPeerStack",
             "type": "shell",
             "group": "build",
