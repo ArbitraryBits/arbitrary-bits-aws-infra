@@ -1,0 +1,25 @@
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+data:
+  mapAccounts: '[]'
+  mapRoles: '[{"rolearn":"arn:aws:iam::437377620726:role/KubernetesStack-arbitrarybitseksclusterMastersRole-9LHLA8HWGIZY","username":"arn:aws:iam::437377620726:role/KubernetesStack-arbitrarybitseksclusterMastersRole-9LHLA8HWGIZY","groups":["system:masters"]},{"rolearn":"arn:aws:iam::437377620726:role/KubernetesStack-arbitrarybitseksclusterNodegroupno-18SXJNX6V0CGZ","username":"system:node:{{EC2PrivateDNSName}}","groups":["system:bootstrappers","system:nodes"]}]'
+  mapUsers: |
+    - userarn: arn:aws:iam::437377620726:user/admin
+      username: admin
+      groups:
+        - eks-console-dashboard-full-access-group
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"mapAccounts":"[]","mapRoles":"[{\"rolearn\":\"arn:aws:iam::437377620726:role/KubernetesStack-arbitrarybitseksclusterMastersRole-9LHLA8HWGIZY\",\"username\":\"arn:aws:iam::437377620726:role/KubernetesStack-arbitrarybitseksclusterMastersRole-9LHLA8HWGIZY\",\"groups\":[\"system:masters\"]},{\"rolearn\":\"arn:aws:iam::437377620726:role/KubernetesStack-arbitrarybitseksclusterNodegroupno-18SXJNX6V0CGZ\",\"username\":\"system:node:{{EC2PrivateDNSName}}\",\"groups\":[\"system:bootstrappers\",\"system:nodes\"]}]","mapUsers":"[]"},"kind":"ConfigMap","metadata":{"annotations":{},"labels":{"aws.cdk.eks/prune-c88949cf318e417d1a0d55327f9908059e6f76bfe2":""},"name":"aws-auth","namespace":"kube-system"}}
+  creationTimestamp: "2022-01-04T14:30:28Z"
+  labels:
+    aws.cdk.eks/prune-c88949cf318e417d1a0d55327f9908059e6f76bfe2: ""
+  name: aws-auth
+  namespace: kube-system
+  resourceVersion: "1097"
+  uid: 56f5cc52-a41e-4335-b42e-52101319a5d7
