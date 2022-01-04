@@ -20,6 +20,33 @@ namespace ArbitraryBitsAwsInfra
             // tag all app items
             Amazon.CDK.Tags.Of(app).Add("Creator", "CDK");
 
+            var type = System.Environment.GetEnvironmentVariable("DEPLOY_TYPE");
+
+            if(type == "DB") 
+            {
+                buildDb(app, env);
+            } 
+            else if (type == "KUBE") 
+            {
+                buildKubernetes(app, env);
+            }
+            else 
+            {
+                Console.WriteLine(args);
+                throw new Exception($"Unknown DEPLOY_TYPE={type}"); 
+            }
+            
+            app.Synth();
+        }
+
+        static void buildKubernetes(App app, Amazon.CDK.Environment env) {
+            Amazon.CDK.Tags.Of(app).Add("Type", "Kubernetes");
+            var kube = new KubernetesStack(app, "KubernetesStack", new StackProps { Env = env });
+        }
+
+        static void buildDb(App app, Amazon.CDK.Environment env) {
+            Amazon.CDK.Tags.Of(app).Add("Type", "DB");
+
             var dbVpc = new ArbitraryBitsDatabaseVpc(app, "DbVpcStack", new StackProps { Env = env });
             var dbPrereq = new ArbitraryBitsDatabasePrereq(app, "DbPrereqStack", dbVpc.Vpc, new StackProps { Env = env });
             var db = new ArbitraryBitsDatabaseFromSnapshot(app, "DbStack", dbVpc.Vpc, new StackProps { Env = env });
@@ -37,8 +64,6 @@ namespace ArbitraryBitsAwsInfra
 
             var ecsPeerConnection = new ToDoEcsServicePeerConnection(app, "EcsPeerStack", new StackProps { Env = env });
             ecsPeerConnection.Node.AddDependency(db);
-
-            app.Synth();
         }
     }
 }
