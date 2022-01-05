@@ -2,6 +2,7 @@ using System;
 using Amazon.CDK;
 using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.EKS;
+using Amazon.CDK.AWS.S3;
 using System.Collections.Generic;
 using Amazon.CDK.AWS.Route53;
 
@@ -46,6 +47,14 @@ namespace ArbitraryBitsAwsInfra
                 Vpc = clusterVpc,
                 VpcSubnets = new [] { new SubnetSelection { SubnetType = SubnetType.PUBLIC } }
             });
+
+            var acc = cluster.AddServiceAccount("TestServiceAccountId", new ServiceAccountOptions {
+                Name = "testserviceaccount",
+                Namespace = "default"
+            });
+
+            var bucket = Bucket.FromBucketArn(this, "AccessBucketId", "arn:aws:s3:::task-manager-setup-secrets");
+            bucket.GrantRead(acc);
             
             // node group
             cluster.AddNodegroupCapacity("node-group", new NodegroupOptions {
