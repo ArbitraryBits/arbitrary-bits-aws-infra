@@ -3,6 +3,7 @@ using Amazon.CDK;
 using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.EKS;
 using System.Collections.Generic;
+using Amazon.CDK.AWS.Route53;
 
 namespace ArbitraryBitsAwsInfra
 {
@@ -10,7 +11,8 @@ namespace ArbitraryBitsAwsInfra
     {
         internal KubernetesStack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
         {
-            // var context = this.Node.TryGetContext("settings") as Dictionary<String, Object>;
+            var context = this.Node.TryGetContext("settings") as Dictionary<String, Object>;
+
             // create vpc
             var clusterVpc = new Vpc(this, "ArbitraryBitsKubernetesVpcId", new VpcProps {
                 Cidr = "10.2.0.0/16",
@@ -32,6 +34,7 @@ namespace ArbitraryBitsAwsInfra
                 Value = clusterVpc.VpcId
             });
 
+            // cluster
             Cluster cluster = new Cluster(this, "arbitrarybits-eks-cluster", new ClusterProps {
                 ClusterName = "ArbitraryBitsKubernetes",
                 Version = KubernetesVersion.V1_21,
@@ -44,6 +47,7 @@ namespace ArbitraryBitsAwsInfra
                 VpcSubnets = new [] { new SubnetSelection { SubnetType = SubnetType.PUBLIC } }
             });
             
+            // node group
             cluster.AddNodegroupCapacity("node-group", new NodegroupOptions {
                 InstanceTypes = new [] { InstanceType.Of(InstanceClass.BURSTABLE3, InstanceSize.SMALL) },
                 MinSize = 1,
@@ -53,20 +57,64 @@ namespace ArbitraryBitsAwsInfra
                 Subnets = new SubnetSelection { SubnetType = SubnetType.PUBLIC }
             });
 
-            // var dbSecurityGroup = SecurityGroup.FromLookup(
-            //     this, 
-            //     "ArbitraryBitsBastionHostDatabaseSecurityGroupId", 
-            //     context["dbInstanceSecurityGroupId"] as String);
+            // setup peering connection betveen kube vpc and db vpc
+            var dbVpc = Vpc.FromLookup(this, "ArbitratyBitsDbVpcId", new VpcLookupOptions() {
+                Tags = new Dictionary<string, string>() { { "Type", "AB-DB-VPC" } }
+            });
 
-            // dbSecurityGroup.AddIngressRule(
-            //     Peer.Ipv4("10.2.0.0/16"), 
-            //     new Port(new PortProps() { 
-            //         StringRepresentation = "5432",
-            //         Protocol = Protocol.TCP, 
-            //         FromPort = 5432,
-            //         ToPort = 5432,
-            //     })
-            //  );
+            var peeringConnection = new CfnVPCPeeringConnection(this, "ArbitraryBitsDatabaseKubernetesVpcPeeringConnectionId", new CfnVPCPeeringConnectionProps() {
+                PeerVpcId = dbVpc.VpcId,
+                VpcId = clusterVpc.VpcId
+            });
+            
+            // routes
+            var routeIndex = 1;
+            foreach (var clusterSubnet in clusterVpc.PublicSubnets)
+            {
+                foreach(var dbSubnet in dbVpc.IsolatedSubnets) 
+                {
+                    new CfnRoute(this, string.Format("KubernetesToDBRoute-{0}", routeIndex), new CfnRouteProps() {
+                        DestinationCidrBlock = dbSubnet.Ipv4CidrBlock,
+                        VpcPeeringConnectionId = peeringConnection.Ref,
+                        RouteTableId = clusterSubnet.RouteTable.RouteTableId
+                    });
+
+                    new CfnRoute(this, string.Format("DBToKubernetesRoute-{0}", routeIndex), new CfnRouteProps() {
+                        DestinationCidrBlock = clusterSubnet.Ipv4CidrBlock,
+                        VpcPeeringConnectionId = peeringConnection.Ref,
+                        RouteTableId = dbSubnet.RouteTable.RouteTableId
+                    });
+
+                    routeIndex += 1;
+                }
+            }
+
+            // setup db security group access from kube
+            var dbSecurityGroup = SecurityGroup.FromLookup(
+                this, 
+                "ArbitraryBitsKubernetesDatabaseSecurityGroupId", 
+                context["dbInstanceSecurityGroupId"] as String);
+
+            dbSecurityGroup.AddIngressRule(
+                Peer.Ipv4("10.2.0.0/16"), 
+                new Port(new PortProps() { 
+                    StringRepresentation = "5432",
+                    Protocol = Protocol.TCP, 
+                    FromPort = 5432,
+                    ToPort = 5432,
+                })
+             );
+        
+            var hostedZone = new PrivateHostedZone(this, "ArbitraryBitsKubernetesPrivateHostedZoneId", new PrivateHostedZoneProps() {
+                Vpc = clusterVpc,
+                ZoneName = "arbitrarybits.com"
+            }); 
+
+            new CnameRecord(this, "ArbitraryBitsKubernetesPrivateHostedZoneDbCnameRecordId", new CnameRecordProps() {
+                Zone = hostedZone,
+                RecordName = "db.arbitrarybits.com",
+                DomainName = context["dbEndpointAdress"] as String
+            });
         }
     }
 }
