@@ -4,8 +4,9 @@ metadata:
   labels:
     run: s3-test
   name: s3-test
+  namespace: todo-dev
 spec:
-  serviceAccountName: testserviceaccount
+  serviceAccountName: todo-dev-account
   containers:
   - image: amazon/aws-cli
     name: my-aws-cli

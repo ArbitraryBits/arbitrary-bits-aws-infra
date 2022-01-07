@@ -47,14 +47,6 @@ namespace ArbitraryBitsAwsInfra
                 Vpc = clusterVpc,
                 VpcSubnets = new [] { new SubnetSelection { SubnetType = SubnetType.PUBLIC } }
             });
-
-            var acc = cluster.AddServiceAccount("TestServiceAccountId", new ServiceAccountOptions {
-                Name = "testserviceaccount",
-                Namespace = "default"
-            });
-
-            var bucket = Bucket.FromBucketArn(this, "AccessBucketId", "arn:aws:s3:::task-manager-setup-secrets");
-            bucket.GrantRead(acc);
             
             // node group
             cluster.AddNodegroupCapacity("node-group", new NodegroupOptions {
@@ -114,6 +106,7 @@ namespace ArbitraryBitsAwsInfra
                 })
              );
         
+            // setup hosted zone with db host alias
             var hostedZone = new PrivateHostedZone(this, "ArbitraryBitsKubernetesPrivateHostedZoneId", new PrivateHostedZoneProps() {
                 Vpc = clusterVpc,
                 ZoneName = "arbitrarybits.com"
@@ -124,6 +117,34 @@ namespace ArbitraryBitsAwsInfra
                 RecordName = "db.arbitrarybits.com",
                 DomainName = context["dbEndpointAdress"] as String
             });
+
+            var devNs = cluster.AddManifest("ToDoServiceDevNamespaceId", new Dictionary<string, object> {
+                { "apiVersion", "v1" },
+                { "kind", "Namespace" },
+                { "metadata", new Dictionary<string, string> { { "name", "todo-dev" } } }
+            });
+
+            var prodNs = cluster.AddManifest("ToDoServiceProdNamespaceId", new Dictionary<string, object> {
+                { "apiVersion", "v1" },
+                { "kind", "Namespace" },
+                { "metadata", new Dictionary<string, string> { { "name", "todo-prod" } } }
+            });
+
+            var devAccount = cluster.AddServiceAccount("ToDoDevServiceAccountId", new ServiceAccountOptions {
+                Name = "todo-dev-account",
+                Namespace = "todo-dev"
+            });
+            devAccount.Node.AddDependency(devNs);
+
+            var prodAccount = cluster.AddServiceAccount("ToDoProdServiceAccountId", new ServiceAccountOptions {
+                Name = "todo-prod-account",
+                Namespace = "todo-prod"
+            });
+            prodAccount.Node.AddDependency(prodNs);
+
+            var secretsBucket = Bucket.FromBucketArn(this, "ToDoSecretsBucketId", "arn:aws:s3:::task-manager-setup-secrets");
+            secretsBucket.GrantRead(devAccount);
+            secretsBucket.GrantRead(prodAccount);
         }
     }
 }
