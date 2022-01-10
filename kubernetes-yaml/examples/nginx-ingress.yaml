@@ -38,17 +38,23 @@ kind: Ingress
 metadata:
   name: nginx-ingress
   namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
-  # tls:
-  # - hosts:
-    # - k8s.examlpe.ru
-    # secretName: nginx-root-certificate-secret
+  tls:
+  - hosts:
+    - test.k8s.aika.cloud
+    secretName: nginx-example-cert
   rules:
-  - host: k8s.examlpe.ru
+  - host: test.k8s.aika.cloud
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: nginx-srv
-          servicePort: 80
+          service:
+            name: nginx-srv
+            port: 
+              number: 80
