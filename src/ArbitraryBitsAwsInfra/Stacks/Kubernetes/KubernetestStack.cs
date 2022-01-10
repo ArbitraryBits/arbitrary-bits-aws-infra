@@ -147,17 +147,17 @@ namespace ArbitraryBitsAwsInfra
             secretsBucket.GrantRead(devAccount);
             secretsBucket.GrantRead(prodAccount);
 
-            var lbServiceAccount = cluster.AddServiceAccount("LoadBalancerServiceAccountId", new ServiceAccountOptions {
-                Name = "aws-load-balancer-controller",
-                Namespace = "kube-system"
-            });
-            var lbPolicy = ManagedPolicy.FromManagedPolicyName(this, "LoadBalancerPolicyId", "AWSLoadBalancerControllerIAMPolicy");
-            lbServiceAccount.Role.AddManagedPolicy(lbPolicy);
+            // var lbServiceAccount = cluster.AddServiceAccount("LoadBalancerServiceAccountId", new ServiceAccountOptions {
+            //     Name = "aws-load-balancer-controller",
+            //     Namespace = "kube-system"
+            // });
+            // var lbPolicy = ManagedPolicy.FromManagedPolicyName(this, "LoadBalancerPolicyId", "AWSLoadBalancerControllerIAMPolicy");
+            // lbServiceAccount.Role.AddManagedPolicy(lbPolicy);
 
-            new CfnOutput(this, "LoadBalancerRoleNameOutput", new CfnOutputProps {
-                ExportName = "LoadBalancerRoleName",
-                Value = lbServiceAccount.Role.RoleName
-            });
+            // new CfnOutput(this, "LoadBalancerRoleNameOutput", new CfnOutputProps {
+            //     ExportName = "LoadBalancerRoleName",
+            //     Value = lbServiceAccount.Role.RoleName
+            // });
         }
     }
 }
