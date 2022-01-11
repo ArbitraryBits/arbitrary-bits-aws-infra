@@ -146,18 +146,6 @@ namespace ArbitraryBitsAwsInfra
             var secretsBucket = Bucket.FromBucketArn(this, "ToDoSecretsBucketId", "arn:aws:s3:::task-manager-setup-secrets");
             secretsBucket.GrantRead(devAccount);
             secretsBucket.GrantRead(prodAccount);
-
-            // var lbServiceAccount = cluster.AddServiceAccount("LoadBalancerServiceAccountId", new ServiceAccountOptions {
-            //     Name = "aws-load-balancer-controller",
-            //     Namespace = "kube-system"
-            // });
-            // var lbPolicy = ManagedPolicy.FromManagedPolicyName(this, "LoadBalancerPolicyId", "AWSLoadBalancerControllerIAMPolicy");
-            // lbServiceAccount.Role.AddManagedPolicy(lbPolicy);
-
-            // new CfnOutput(this, "LoadBalancerRoleNameOutput", new CfnOutputProps {
-            //     ExportName = "LoadBalancerRoleName",
-            //     Value = lbServiceAccount.Role.RoleName
-            // });
         }
     }
 }
