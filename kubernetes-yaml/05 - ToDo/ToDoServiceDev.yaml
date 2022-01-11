@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tododev
+  namespace: todo-dev
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 5000
+  selector:
+    app: tododev
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tododev
+  namespace: todo-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tododev
+  template:
+    metadata:
+          labels:
+            app: tododev
+    spec:
+      serviceAccountName: todo-dev-account
+      containers:
+      - image: 437377620726.dkr.ecr.us-east-1.amazonaws.com/todo-service:dev-latest
+        name: tododev
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        env:
+        - name: LOAD_S3_SECRETS
+          value: "YES"
+        - name: BACKUP_RESTORE_LOG
+          value: "/restore-dev.log"
+        - name: LOGS_DIRECTORY
+          value: "/"
+        - name: MIGRATE_LOG
+          value: "/migrate-dev.log"
+        - name: RESTORE_BACKUP
+          value: "NO"
+        - name: SECRETS_BUCKET_NAME
+          value: "task-manager-setup-secrets"
+        - name: SECRETS_BUCKET_REGION
+          value: "us-east-1"
+        - name: SECRETS_FILE_NAME
+          value: "task-manager-service-rds-dev.txt"
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tododev-ingress
+  namespace: todo-dev
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - dev.k8s.aika.cloud
+    secretName: tododev-cert
+  # - hosts:
+  #   - dev.aika.cloud
+  #   secretName: tododev-2-cert
+  rules:
+  - host: dev.k8s.aika.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tododev
+            port: 
+              number: 80
+  # - host: dev.aika.cloud
+  #   http:
+  #     paths:
+  #     - path: /
+  #       pathType: Prefix
+  #       backend:
+  #         service:
+  #           name: tododev
+  #           port: 
+  #             number: 80
