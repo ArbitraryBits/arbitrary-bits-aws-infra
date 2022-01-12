@@ -118,34 +118,6 @@ namespace ArbitraryBitsAwsInfra
                 RecordName = "db.arbitrarybits.com",
                 DomainName = context["dbEndpointAdress"] as String
             });
-
-            var devNs = cluster.AddManifest("ToDoServiceDevNamespaceId", new Dictionary<string, object> {
-                { "apiVersion", "v1" },
-                { "kind", "Namespace" },
-                { "metadata", new Dictionary<string, string> { { "name", "todo-dev" } } }
-            });
-
-            var prodNs = cluster.AddManifest("ToDoServiceProdNamespaceId", new Dictionary<string, object> {
-                { "apiVersion", "v1" },
-                { "kind", "Namespace" },
-                { "metadata", new Dictionary<string, string> { { "name", "todo-prod" } } }
-            });
-
-            var devAccount = cluster.AddServiceAccount("ToDoDevServiceAccountId", new ServiceAccountOptions {
-                Name = "todo-dev-account",
-                Namespace = "todo-dev"
-            });
-            devAccount.Node.AddDependency(devNs);
-
-            var prodAccount = cluster.AddServiceAccount("ToDoProdServiceAccountId", new ServiceAccountOptions {
-                Name = "todo-prod-account",
-                Namespace = "todo-prod"
-            });
-            prodAccount.Node.AddDependency(prodNs);
-
-            var secretsBucket = Bucket.FromBucketArn(this, "ToDoSecretsBucketId", "arn:aws:s3:::task-manager-setup-secrets");
-            secretsBucket.GrantRead(devAccount);
-            secretsBucket.GrantRead(prodAccount);
         }
     }
 }
