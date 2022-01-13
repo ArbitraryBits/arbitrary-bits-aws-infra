@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: s3-test
+  name: s3-test
+  namespace: todo-dev
+spec:
+  serviceAccountName: todo-dev-account
+  containers:
+  - image: amazon/aws-cli
+    name: my-aws-cli
+    command: ['aws', 's3', 'ls', 's3://task-manager-setup-secrets/']
+  restartPolicy: Never

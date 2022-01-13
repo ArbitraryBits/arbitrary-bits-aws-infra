@@ -2,123 +2,279 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Deploy DB Prereq",
-            "command": "cdk context --clear && cdk deploy DbVpcStack DbPrereqStack --require-approval never",
+            "label": "Clear context",
+            "command": "cdk context --clear",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
+            }
+        },
+        {
+            "label": "Deploy DB Prereq",
+            "command": "cdk deploy DbVpcStack DbPrereqStack --require-approval never",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "DB"
+                }
             }
         },
         {
             "label": "Destroy DB Prereq",
-            "command": "cdk context --clear && cdk destroy DbVpcStack DbPrereqStack",
+            "command": "cdk destroy DbVpcStack DbPrereqStack",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "DB"
+                }
             }
         },
         {
             "label": "Deploy DB",
-            "command": "cdk context --clear && cdk deploy DbVpcStack DbPrereqStack DbStack --require-approval never",
+            "command": "cdk deploy DbVpcStack DbPrereqStack DbStack --require-approval never",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "DB"
+                }
             }
         },
         {
             "label": "Destroy DB",
-            "command": "cdk context --clear && cdk destroy DbVpcStack DbPrereqStack DbStack",
+            "command": "cdk destroy DbVpcStack DbPrereqStack DbStack",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "DB"
+                }
             }
         },
         {
             "label": "Deploy DB BastionHost",
-            "command": "cdk context --clear && cdk deploy DbBastionHostVpcStack DbBastionHostStack --require-approval never",
+            "command": "cdk deploy DbBastionHostVpcStack DbBastionHostStack --require-approval never",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "DB"
+                }
             }
         },
         {
             "label": "Destroy DB BastionHost",
-            "command": "cdk context --clear && cdk destroy DbBastionHostVpcStack DbBastionHostStack --force",
+            "command": "cdk destroy DbBastionHostVpcStack DbBastionHostStack --force",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "DB"
+                }
             }
         },
         {
             "label": "Deploy iRacing secrets",
-            "command": "cdk context --clear && cdk deploy IRacingCalendarDbSecretsStack --require-approval never",
+            "command": "cdk deploy IRacingCalendarDbSecretsStack --require-approval never",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "DB"
+                }
             }
         },
         {
             "label": "Destroy iRacing secrets",
-            "command": "cdk context --clear && cdk destroy IRacingCalendarDbSecretsStack",
+            "command": "cdk destroy IRacingCalendarDbSecretsStack",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "DB"
+                }
             }
         },
         {
             "label": "Deploy ToDo secrets",
-            "command": "cdk context --clear && cdk deploy ToDoDbSecretsStack --require-approval never",
+            "command": "cdk deploy ToDoDbSecretsStack --require-approval never",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "DB"
+                }
             }
         },
         {
             "label": "Destroy ToDo secrets",
-            "command": "cdk context --clear && cdk destroy ToDoDbSecretsStack",
+            "command": "cdk destroy ToDoDbSecretsStack",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "DB"
+                }
             }
         },
         {
             "label": "Deploy ToDo Ecs peering",
-            "command": "cdk context --clear && cdk deploy EcsPeerStack --require-approval never",
+            "command": "cdk deploy EcsPeerStack --require-approval never",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "DB"
+                }
             }
         },
         {
             "label": "Destroy ToDo Ecs peering",
-            "command": "cdk context --clear && cdk destroy EcsPeerStack",
+            "command": "cdk destroy EcsPeerStack",
             "type": "shell",
             "group": "build",
             "problemMatcher": [],
             "runOptions": {
                 "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "DB"
+                }
+            }
+        },
+        {
+            "label": "Deploy Kubernetes",
+            "command": "cdk deploy KubernetesStack --require-approval never",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "KUBE"
+                }
+            }
+        },
+        {
+            "label": "Destroy Kubernetes",
+            "command": "cdk destroy KubernetesStack",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "KUBE"
+                }
             }
         }
     ]

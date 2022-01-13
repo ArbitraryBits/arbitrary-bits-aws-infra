@@ -10,7 +10,8 @@
       "ecsInstanceSecurityGroupId": "sg-0b199e477107770b4",
       "ecsRouteTableId": "rtb-49b37030",
       "ecsVpcId": "vpc-b978fadf",
-      "dbSnapshotName": "arn:aws:rds:us-east-1:437377620726:snapshot:rds:arbitrrarybitsdatabase-2021-12-25-02-13"
+      "dbSnapshotName": "arn:aws:rds:us-east-1:437377620726:snapshot:rds:arbitrrarybitsdatabase-2021-12-25-02-13",
+      "dbEndpointAdress": "arbitrrarybitsdatabase.cangtqzsy9uo.us-east-1.rds.amazonaws.com"
     },
     "dev": {
       "account": "437377620726",

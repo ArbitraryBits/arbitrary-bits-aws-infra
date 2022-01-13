@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: todoprod
+  namespace: todo-prod
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 5000
+  selector:
+    app: todoprod
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todoprod
+  namespace: todo-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todoprod
+  template:
+    metadata:
+          labels:
+            app: todoprod
+    spec:
+      containers:
+      - image: 437377620726.dkr.ecr.us-east-1.amazonaws.com/todo-service:1.3.0-release-2-release
+        name: todoprod
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        envFrom:
+        - secretRef:
+            name: todo-prod-secret
+        env:
+        - name: LOAD_S3_SECRETS
+          value: "NO"
+        - name: BACKUP_RESTORE_LOG
+          value: "/restore-prod.log"
+        - name: LOGS_DIRECTORY
+          value: "/"
+        - name: MIGRATE_LOG
+          value: "/migrate-prod.log"
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: todoprod-ingress
+  namespace: todo-prod
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - prod.k8s.aika.cloud
+    secretName: todoprod-cert
+  rules:
+  - host: prod.k8s.aika.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: todoprod
+            port: 
+              number: 80
