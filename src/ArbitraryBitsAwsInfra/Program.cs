@@ -30,6 +30,10 @@ namespace ArbitraryBitsAwsInfra
             {
                 buildKubernetes(app, env);
             }
+            else if (type == "WORKNODE") 
+            {
+                buildWorkingNode(app, env);
+            }
             else 
             {
                 Console.WriteLine(args);
@@ -42,6 +46,13 @@ namespace ArbitraryBitsAwsInfra
         static void buildKubernetes(App app, Amazon.CDK.Environment env) {
             Amazon.CDK.Tags.Of(app).Add("Type", "Kubernetes");
             var kube = new KubernetesStack(app, "KubernetesStack", new StackProps { Env = env });
+        }
+
+        static void buildWorkingNode(App app, Amazon.CDK.Environment env) {
+            Amazon.CDK.Tags.Of(app).Add("Type", "WorkingNode");
+            
+            var vpc = new ArbitraryBitsWorkingNodeVpc(app, "WorkingNodeVpcStack", new StackProps { Env = env });
+            new ArbitraryBitsWorkingNode(app, "WorkingNodeStack", vpc.WorkingNodeVpc, new StackProps { Env = env });
         }
 
         static void buildDb(App app, Amazon.CDK.Environment env) {

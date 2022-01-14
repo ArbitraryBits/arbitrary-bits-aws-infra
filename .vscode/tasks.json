@@ -276,6 +276,44 @@
                     "DEPLOY_TYPE": "KUBE"
                 }
             }
+        },
+        {
+            "label": "Deploy WorkingNode",
+            "command": "cdk deploy WorkingNodeVpcStack WorkingNodeStack --require-approval never",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "WORKNODE"
+                }
+            }
+        },
+        {
+            "label": "Destroy WorkingNode",
+            "command": "cdk destroy WorkingNodeStack WorkingNodeVpcStack",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+            "runOptions": {
+                "instanceLimit": 1
+            },
+            "dependsOn": [
+                "Clear context"
+            ],
+            "dependsOrder": "sequence",
+            "options": {
+                "env": {
+                    "DEPLOY_TYPE": "WORKNODE"
+                }
+            }
         }
     ]
 }
