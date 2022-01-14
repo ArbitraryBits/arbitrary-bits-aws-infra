@@ -36,6 +36,17 @@ namespace ArbitraryBitsAwsInfra
                 "Allow ssh access from my IP"
             );
 
+            sg.Connections.AllowFromAnyIpv4(
+                new Port(new PortProps() 
+                { 
+                    StringRepresentation = "5000",
+                    Protocol = Protocol.TCP, 
+                    FromPort = 5000,
+                    ToPort = 5000,
+                }),
+                "Allow internet traffic to 5000 port"
+            );
+
             var userData = UserData.ForLinux(new LinuxUserDataOptions());
             userData.AddCommands(
                 @"sudo apt-get update && \
