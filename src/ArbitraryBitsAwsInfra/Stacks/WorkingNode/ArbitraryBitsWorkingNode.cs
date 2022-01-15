@@ -47,6 +47,28 @@ namespace ArbitraryBitsAwsInfra
                 "Allow internet traffic to 5000 port"
             );
 
+            sg.Connections.AllowFromAnyIpv4(
+                new Port(new PortProps() 
+                { 
+                    StringRepresentation = "80",
+                    Protocol = Protocol.TCP, 
+                    FromPort = 80,
+                    ToPort = 80,
+                }),
+                "Allow internet traffic to 80 HTTP port"
+            );
+
+            sg.Connections.AllowFromAnyIpv4(
+                new Port(new PortProps() 
+                { 
+                    StringRepresentation = "443",
+                    Protocol = Protocol.TCP, 
+                    FromPort = 443,
+                    ToPort = 443,
+                }),
+                "Allow internet traffic to 443 HTTPS port"
+            );
+
             var userData = UserData.ForLinux(new LinuxUserDataOptions());
             userData.AddCommands(
                 @"sudo apt-get update && \
@@ -54,6 +76,7 @@ namespace ArbitraryBitsAwsInfra
                     ca-certificates \
                     curl \
                     gnupg \
+                    awscli \
                     lsb-release && \
                     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg &&
                     echo \
@@ -105,7 +128,7 @@ namespace ArbitraryBitsAwsInfra
                 Protocol = Protocol.TCP, 
                 FromPort = 5432,
                 ToPort = 5432,
-            }), "Allow connections from Bastion host instance to DB");
+            }), "Allow connections from WorkNode host instance to DB");
 
             var sshCommand = String.Format("ssh -i ~/.ssh/{0}.pem -L 5432:{1}:5432 ubuntu@{2}", 
                     context["dbBastionHostKey"] as string,
