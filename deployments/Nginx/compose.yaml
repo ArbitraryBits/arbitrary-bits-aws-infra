@@ -51,4 +51,3 @@ secrets:
 networks:
   frontend:
     driver: overlay
-    external: true
