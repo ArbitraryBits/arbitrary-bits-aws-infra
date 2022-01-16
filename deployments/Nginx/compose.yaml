@@ -12,6 +12,7 @@ services:
       - todoprod
     volumes:
       - /home/ubuntu/nginx/logs:/logs
+      - /etc/letsencrypt:/letsencrypt
     secrets:
       - source: nginx.conf
         target: /etc/nginx/conf.d/site.conf
