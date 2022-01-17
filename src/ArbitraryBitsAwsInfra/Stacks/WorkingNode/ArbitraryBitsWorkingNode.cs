@@ -88,9 +88,12 @@ namespace ArbitraryBitsAwsInfra
                     yes | docker network rm ingress && \
                     sleep 10 && \
                     docker network create --driver overlay --ingress --subnet=10.11.0.0/16 --gateway=10.11.0.2 --opt com.docker.network.driver.mtu=1200 ingress && \
-                    mkdir /home/ubuntu/nginx && \
-                    mkdir /home/ubuntu/nginx/logs && \
-                    mkdir /home/ubuntu/cert
+                    mkdir -p /home/ubuntu/certbot/www/.well-known/acme-challenge && \
+                    mkdir -p /home/ubuntu/nginx/logs && \
+                    sudo chown -R ubuntu:ubuntu /home/ubuntu/certbot && \
+                    sudo chown -R ubuntu:ubuntu /home/ubuntu/nginx && \
+                    sudo snap install --classic certbot && \
+                    sudo ln -s /snap/bin/certbot /usr/bin/certbot
                     "
             );
 

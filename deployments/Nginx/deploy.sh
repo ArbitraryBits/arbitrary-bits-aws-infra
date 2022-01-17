@@ -9,5 +9,9 @@ aws s3 --region ${SECRETS_BUCKET_REGION} cp s3://${SECRETS_BUCKET_NAME}/${SECRET
     docker stack rm nginx || true && \
     docker secret rm nginx.conf || true && \
     docker secret create nginx.conf default.conf && \
+    docker secret rm options-ssl-nginx.conf || true && \
+    docker secret create options-ssl-nginx.conf options-ssl-nginx.conf && \
+    docker secret rm ssl-dhparams.pem || true && \
+    docker secret create ssl-dhparams.pem ssl-dhparams.pem && \
     env $(cat todoprod.env | grep ^[A-Z] | xargs) docker stack deploy --with-registry-auth --compose-file compose.yaml nginx && \
     rm todoprod.env
