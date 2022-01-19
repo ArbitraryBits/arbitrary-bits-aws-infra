@@ -99,7 +99,7 @@ namespace ArbitraryBitsAwsInfra
 
             var instance = new Instance_(this, "WorkingNodeId", new InstanceProps() 
             {
-                InstanceType = new InstanceType("t3.small"),
+                InstanceType = new InstanceType("t3.micro"),
                 InstanceName = "WorkingNode",
                 MachineImage = image,
                 Vpc = vpc,
