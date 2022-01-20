@@ -342,3 +342,4 @@ ASALocalRun/
 # End of https://www.gitignore.io/api/csharp
 /cdk.context.json
 .DS_Store
+.env

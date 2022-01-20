@@ -36,6 +36,28 @@ namespace ArbitraryBitsAwsInfra
                 "Allow ssh access from my IP"
             );
 
+            sg.Connections.AllowFromAnyIpv4(
+                new Port(new PortProps() 
+                { 
+                    StringRepresentation = "80",
+                    Protocol = Protocol.TCP, 
+                    FromPort = 80,
+                    ToPort = 80,
+                }),
+                "Allow internet traffic to 80 HTTP port"
+            );
+
+            sg.Connections.AllowFromAnyIpv4(
+                new Port(new PortProps() 
+                { 
+                    StringRepresentation = "443",
+                    Protocol = Protocol.TCP, 
+                    FromPort = 443,
+                    ToPort = 443,
+                }),
+                "Allow internet traffic to 443 HTTPS port"
+            );
+
             var userData = UserData.ForLinux(new LinuxUserDataOptions());
             userData.AddCommands(
                 @"sudo apt-get update && \
@@ -50,13 +72,23 @@ namespace ArbitraryBitsAwsInfra
                     $(lsb_release -cs) stable"" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && \
                     sudo apt-get update && \
                     sudo apt-get install -y docker-ce docker-ce-cli containerd.io && \
-                    sudo usermod -a -G docker ubuntu"
+                    sudo usermod -a -G docker ubuntu && \
+                    docker swarm init && \
+                    yes | docker network rm ingress && \
+                    sleep 10 && \
+                    docker network create --driver overlay --ingress --subnet=10.11.0.0/16 --gateway=10.11.0.2 --opt com.docker.network.driver.mtu=1200 ingress && \
+                    mkdir -p /home/ubuntu/certbot/www/.well-known/acme-challenge && \
+                    mkdir -p /home/ubuntu/nginx/logs && \
+                    sudo chown -R ubuntu:ubuntu /home/ubuntu/certbot && \
+                    sudo chown -R ubuntu:ubuntu /home/ubuntu/nginx && \
+                    sudo snap install --classic certbot && \
+                    sudo ln -s /snap/bin/certbot /usr/bin/certbot
+                    "
             );
-
 
             var instance = new Instance_(this, "WorkingNodeId", new InstanceProps() 
             {
-                InstanceType = new InstanceType("t3.small"),
+                InstanceType = new InstanceType("t3.micro"),
                 InstanceName = "WorkingNode",
                 MachineImage = image,
                 Vpc = vpc,
@@ -94,7 +126,7 @@ namespace ArbitraryBitsAwsInfra
                 Protocol = Protocol.TCP, 
                 FromPort = 5432,
                 ToPort = 5432,
-            }), "Allow connections from Bastion host instance to DB");
+            }), "Allow connections from WorkNode host instance to DB");
 
             var sshCommand = String.Format("ssh -i ~/.ssh/{0}.pem -L 5432:{1}:5432 ubuntu@{2}", 
                     context["dbBastionHostKey"] as string,
@@ -104,8 +136,20 @@ namespace ArbitraryBitsAwsInfra
             new CfnOutput(this, "WorkingNodeSshCommandOutputId", new CfnOutputProps
             {
                 Value = sshCommand,
-                Description = "WorkingNode endpoint adress"
+                Description = "WorkingNode ssh command"
+            });
+
+            var dockerContextCommand = String.Format(@"docker context use default && 
+                        docker context rm worknode && 
+                        docker context create --docker host=ssh://ubuntu@{0} \--description=""AWS work node context"" worknode && 
+                        docker context use worknode", instance.InstancePublicDnsName);
+
+            new CfnOutput(this, "DockerContextCommandOutputId", new CfnOutputProps
+            {
+                Value = dockerContextCommand,
+                Description = "Docker context command"
             });
         }
     }
 }
+
