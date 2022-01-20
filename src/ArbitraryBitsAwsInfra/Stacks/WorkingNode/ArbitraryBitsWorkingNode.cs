@@ -39,17 +39,6 @@ namespace ArbitraryBitsAwsInfra
             sg.Connections.AllowFromAnyIpv4(
                 new Port(new PortProps() 
                 { 
-                    StringRepresentation = "5000",
-                    Protocol = Protocol.TCP, 
-                    FromPort = 5000,
-                    ToPort = 5000,
-                }),
-                "Allow internet traffic to 5000 port"
-            );
-
-            sg.Connections.AllowFromAnyIpv4(
-                new Port(new PortProps() 
-                { 
                     StringRepresentation = "80",
                     Protocol = Protocol.TCP, 
                     FromPort = 80,
